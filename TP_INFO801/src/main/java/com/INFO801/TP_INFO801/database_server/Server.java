@@ -54,7 +54,7 @@ public class Server implements PassServer {
 
     @Override
     public void deletePass(String passId) {
-
+        manager.deletePass(passId);
     }
 
     @Override
