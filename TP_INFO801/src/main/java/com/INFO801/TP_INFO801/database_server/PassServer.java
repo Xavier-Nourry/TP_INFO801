@@ -7,7 +7,7 @@ public interface PassServer extends Remote {
     void triggerAlarm(String buildingId) throws RemoteException;
     void enter(String buildingId, String passId);
     void exit(String buildingId, String passId);
-    void createPass(String firstName, String lastName, String[] authorizedBuildings);
+    void createPass(String id, String firstName, String lastName, String[] authorizedBuildings);
     void deletePass(String passId);
     Pass[] getUsersIn(String buildingId);
     boolean canEnter(String buildingId, String passId);

@@ -1,6 +1,7 @@
 package com.INFO801.TP_INFO801.database_server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class PassPermissionManager {
@@ -20,4 +21,17 @@ public class PassPermissionManager {
         Building b = new Building(buildingId);
         buildings.add(b);
     }
+
+    public void createPass(String passId, String firstName, String lastName, String[] authorizedBuildingIds) {
+        Pass p = new Pass(passId, firstName, lastName);
+        ArrayList<Building> authorizedBuildings = new ArrayList<>();
+        for(Building b : buildings){
+            if(Arrays.stream(authorizedBuildingIds).anyMatch(bId -> bId.equals(b.id))){
+                authorizedBuildings.add(b);
+            }
+        }
+        permissions.put(p.id, authorizedBuildings);
+    }
+
+
 }

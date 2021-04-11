@@ -48,8 +48,8 @@ public class Server implements PassServer {
     }
 
     @Override
-    public void createPass(String firstName, String lastName, String[] authorizedBuildings) {
-
+    public void createPass(String passId, String firstName, String lastName, String[] authorizedBuildings) {
+        manager.createPass(passId, firstName, lastName, authorizedBuildings);
     }
 
     @Override
