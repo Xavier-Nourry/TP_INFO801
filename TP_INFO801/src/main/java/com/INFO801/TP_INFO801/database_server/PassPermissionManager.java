@@ -8,7 +8,7 @@ import java.util.Optional;
 public class PassPermissionManager {
     public ArrayList<Building> buildings;
     public ArrayList<Pass> passes;
-    private final HashMap<String, ArrayList<Building>> permissions;
+    private final HashMap<Pass, ArrayList<Building>> permissions;
     private final HashMap<Building, ArrayList<Pass>> peopleCurrentlyIn;
 
     public PassPermissionManager(){
@@ -35,18 +35,25 @@ public class PassPermissionManager {
             }
         }
         passes.add(p);
-        permissions.put(p.id, authorizedBuildings);
+        permissions.put(p, authorizedBuildings);
     }
 
     public void deletePass(String passId) {
         //Update permissions
-        permissions.remove(passId);
+        {
+            Pass p = getPass(passId);
+            if(p!=null)permissions.remove(p);
+        }
         //Update list of people in buildings
-        for(ArrayList<Pass> list : peopleCurrentlyIn.values()){
-            list.removeIf(p -> p.id.equals(passId));
+        {
+            for(ArrayList<Pass> list : peopleCurrentlyIn.values()){
+                list.removeIf(p -> p.id.equals(passId));
+            }
         }
         //Update pass list
-        passes.removeIf(pass -> pass.id.equals(passId));
+        {
+            passes.removeIf(p -> p.id.equals(passId));
+        }
     }
 
     public void notifyEntrance(String buildingId, String passId) {
@@ -75,7 +82,7 @@ public class PassPermissionManager {
         Building b = getBuilding(buildingId);
         Pass p = getPass(passId);
         if(b == null || p == null) return false;
-        return permissions.get(passId).contains(b);
+        return permissions.get(p).contains(b);
     }
 
     private Building getBuilding(String id){
