@@ -1,21 +1,20 @@
 package com.INFO801.TP_INFO801.database_server;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 public class PassPermissionManager {
     public ArrayList<Building> buildings;
     public ArrayList<Pass> passes;
     private final HashMap<Pass, ArrayList<Building>> permissions;
     private final HashMap<Building, ArrayList<Pass>> peopleCurrentlyIn;
+    private final EntryLogger logs;
 
     public PassPermissionManager(){
         buildings = new ArrayList<>();
         passes = new ArrayList<>();
         permissions = new HashMap<>();
         peopleCurrentlyIn = new HashMap<>();
+        logs = new EntryLogger();
     }
 
     public void createBuilding(String buildingId) {
@@ -61,6 +60,7 @@ public class PassPermissionManager {
         Pass p = getPass(passId);
         if(b != null && p != null){
             peopleCurrentlyIn.get(b).add(p);
+            logs.logEntrance(b,p,new Date(System.currentTimeMillis()));
         }
     }
 
@@ -69,6 +69,7 @@ public class PassPermissionManager {
         Pass p = getPass(passId);
         if(b != null && p != null){
             peopleCurrentlyIn.get(b).remove(p);
+            logs.logExit(b,p,new Date(System.currentTimeMillis()));
         }
     }
 
