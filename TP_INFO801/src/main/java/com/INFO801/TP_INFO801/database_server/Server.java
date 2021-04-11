@@ -59,7 +59,7 @@ public class Server implements PassServer {
 
     @Override
     public Pass[] getUsersIn(String buildingId) {
-        return new Pass[0];
+        return manager.getUsersIn(buildingId);
     }
 
     @Override

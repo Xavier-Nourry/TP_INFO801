@@ -50,18 +50,34 @@ public class PassPermissionManager {
     }
 
     public void notifyEntrance(String buildingId, String passId) {
-        Optional<Building> ob = buildings.stream().filter(building -> building.id.equals(buildingId)).findFirst();
-        Optional<Pass> op = passes.stream().filter(pass -> pass.id.equals(passId)).findFirst();
-        if(ob.isPresent() && op.isPresent()){
-            peopleCurrentlyIn.get(ob.get()).add(op.get());
+        Building b = getBuilding(buildingId);
+        Pass p = getPass(passId);
+        if(b != null && p != null){
+            peopleCurrentlyIn.get(b).add(p);
         }
     }
 
     public void notifyExit(String buildingId, String passId) {
-        Optional<Building> ob = buildings.stream().filter(building -> building.id.equals(buildingId)).findFirst();
-        Optional<Pass> op = passes.stream().filter(pass -> pass.id.equals(passId)).findFirst();
-        if(ob.isPresent() && op.isPresent()){
-            peopleCurrentlyIn.get(ob.get()).remove(op.get());
+        Building b = getBuilding(buildingId);
+        Pass p = getPass(passId);
+        if(b != null && p != null){
+            peopleCurrentlyIn.get(b).remove(p);
         }
+    }
+
+    public Pass[] getUsersIn(String buildingId) {
+        Building b = getBuilding(buildingId);
+        if(b == null) return new Pass[0];
+        return (Pass[])peopleCurrentlyIn.get(b).toArray();
+    }
+
+    private Building getBuilding(String id){
+        Optional<Building> ob = buildings.stream().filter(building -> building.id.equals(id)).findFirst();
+        return ob.orElse(null);
+    }
+
+    private Pass getPass(String id){
+        Optional<Pass> op = passes.stream().filter(pass -> pass.id.equals(id)).findFirst();
+        return op.orElse(null);
     }
 }
