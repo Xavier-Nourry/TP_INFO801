@@ -3,16 +3,19 @@ package com.INFO801.TP_INFO801.database_server;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class PassPermissionManager {
     public ArrayList<Building> buildings;
     public ArrayList<Pass> passes;
-    private HashMap<String, ArrayList<Building>> permissions;
+    private final HashMap<String, ArrayList<Building>> permissions;
+    private final HashMap<Building, ArrayList<Pass>> peopleCurrentlyIn;
 
     public PassPermissionManager(){
         buildings = new ArrayList<>();
         passes = new ArrayList<>();
         permissions = new HashMap<>();
+        peopleCurrentlyIn = new HashMap<>();
     }
 
     public void createBuilding(String buildingId) {
@@ -20,6 +23,7 @@ public class PassPermissionManager {
         if(buildings.stream().anyMatch(building -> building.id.equals(buildingId))) return;
         Building b = new Building(buildingId);
         buildings.add(b);
+        peopleCurrentlyIn.put(b, new ArrayList<>());
     }
 
     public void createPass(String passId, String firstName, String lastName, String[] authorizedBuildingIds) {
@@ -35,7 +39,21 @@ public class PassPermissionManager {
     }
 
     public void deletePass(String passId) {
+        //Update permissions
         permissions.remove(passId);
+        //Update list of people in buildings
+        for(ArrayList<Pass> list : peopleCurrentlyIn.values()){
+            list.removeIf(p -> p.id.equals(passId));
+        }
+        //Update pass list
         passes.removeIf(pass -> pass.id.equals(passId));
+    }
+
+    public void notifyEntrance(String buildingId, String passId) {
+        Optional<Building> ob = buildings.stream().filter(building -> building.id.equals(buildingId)).findFirst();
+        Optional<Pass> op = passes.stream().filter(pass -> pass.id.equals(passId)).findFirst();
+        if(ob.isPresent() && op.isPresent()){
+            peopleCurrentlyIn.get(ob.get()).add(op.get());
+        }
     }
 }

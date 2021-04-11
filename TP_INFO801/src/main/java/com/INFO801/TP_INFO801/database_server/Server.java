@@ -39,12 +39,11 @@ public class Server implements PassServer {
 
     @Override
     public void enter(String buildingId, String passId) {
-
+        manager.notifyEntrance(buildingId, passId);
     }
 
     @Override
     public void exit(String buildingId, String passId) {
-
     }
 
     @Override
