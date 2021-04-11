@@ -56,4 +56,12 @@ public class PassPermissionManager {
             peopleCurrentlyIn.get(ob.get()).add(op.get());
         }
     }
+
+    public void notifyExit(String buildingId, String passId) {
+        Optional<Building> ob = buildings.stream().filter(building -> building.id.equals(buildingId)).findFirst();
+        Optional<Pass> op = passes.stream().filter(pass -> pass.id.equals(passId)).findFirst();
+        if(ob.isPresent() && op.isPresent()){
+            peopleCurrentlyIn.get(ob.get()).remove(op.get());
+        }
+    }
 }

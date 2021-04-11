@@ -44,6 +44,7 @@ public class Server implements PassServer {
 
     @Override
     public void exit(String buildingId, String passId) {
+        manager.notifyExit(buildingId, passId);
     }
 
     @Override
