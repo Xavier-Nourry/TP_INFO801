@@ -13,7 +13,13 @@ public class Server implements PassServer {
     public static final String HOST = "127.0.0.1";
     public static final int PORT = 1099;
 
-    private Server(){}
+    private PassPermissionManager manager;
+
+    private Server(){
+        manager = new PassPermissionManager();
+        manager.createBuilding("LABOS");
+        manager.createBuilding("LAUZIERES");
+    }
 
     public static void main(String[] args){
         try{
