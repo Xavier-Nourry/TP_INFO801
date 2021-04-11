@@ -30,9 +30,10 @@ public class PassPermissionManager {
                 authorizedBuildings.add(b);
             }
         }
+        passes.add(p);
         permissions.put(p.id, authorizedBuildings);
     }
-    
+
     public void deletePass(String passId) {
         permissions.remove(passId);
         passes.removeIf(pass -> pass.id.equals(passId));
