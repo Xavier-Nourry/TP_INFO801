@@ -69,6 +69,20 @@ public class Server implements PassServer {
     }
 
     @Override
+    public Building[] getBuildings() throws RemoteException {
+        Building[] buildings = new Building[manager.buildings.size()];
+        manager.buildings.toArray(buildings);
+        return buildings;
+    }
+
+    @Override
+    public Pass[] getPasses() throws RemoteException {
+        Pass[] passes = new Pass[manager.passes.size()];
+        manager.passes.toArray(passes);
+        return passes;
+    }
+
+    @Override
     public boolean canEnter(String buildingId, String passId) {
         return manager.isAllowed(buildingId, passId);
     }
