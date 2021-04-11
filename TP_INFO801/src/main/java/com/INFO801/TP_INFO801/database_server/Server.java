@@ -64,6 +64,6 @@ public class Server implements PassServer {
 
     @Override
     public boolean canEnter(String buildingId, String passId) {
-        return false;
+        return manager.isAllowed(buildingId, passId);
     }
 }

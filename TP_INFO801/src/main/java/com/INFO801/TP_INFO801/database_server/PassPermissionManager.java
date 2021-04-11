@@ -71,6 +71,13 @@ public class PassPermissionManager {
         return (Pass[])peopleCurrentlyIn.get(b).toArray();
     }
 
+    public boolean isAllowed(String buildingId, String passId) {
+        Building b = getBuilding(buildingId);
+        Pass p = getPass(passId);
+        if(b == null || p == null) return false;
+        return permissions.get(passId).contains(b);
+    }
+
     private Building getBuilding(String id){
         Optional<Building> ob = buildings.stream().filter(building -> building.id.equals(id)).findFirst();
         return ob.orElse(null);
