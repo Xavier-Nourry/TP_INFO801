@@ -6,4 +6,11 @@ public class Building {
     public Building(String id){
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Building{" +
+                "id='" + id + '\'' +
+                '}';
+    }
 }

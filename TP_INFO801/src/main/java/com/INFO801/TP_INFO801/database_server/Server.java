@@ -17,13 +17,19 @@ public class Server implements PassServer {
 
     private Server(){
         manager = new PassPermissionManager();
+    }
+
+    private void setup(){
         manager.createBuilding("LABOS");
         manager.createBuilding("LAUZIERES");
+        manager.createPass("1","Jean","Valjean",new String[]{"LAUZIERES"});
+        manager.createPass("2","Julien","Sorel",new String[]{"LABOS","LAUZIERES"});
     }
 
     public static void main(String[] args){
         try{
             Server serv = new Server();
+            serv.setup();
             PassServer stub = (PassServer) UnicastRemoteObject.exportObject(serv, 0);
             Registry reg = LocateRegistry.createRegistry(PORT);
             reg.bind("PassServer", stub);

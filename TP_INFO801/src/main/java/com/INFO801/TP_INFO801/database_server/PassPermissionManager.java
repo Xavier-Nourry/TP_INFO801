@@ -76,7 +76,9 @@ public class PassPermissionManager {
     public Pass[] getUsersIn(String buildingId) {
         Building b = getBuilding(buildingId);
         if(b == null) return new Pass[0];
-        return (Pass[])peopleCurrentlyIn.get(b).toArray();
+        Pass[] passes = new Pass[peopleCurrentlyIn.get(b).size()];
+        peopleCurrentlyIn.get(b).toArray(passes);
+        return passes;
     }
 
     public boolean isAllowed(String buildingId, String passId) {
@@ -84,6 +86,10 @@ public class PassPermissionManager {
         Pass p = getPass(passId);
         if(b == null || p == null) return false;
         return permissions.get(p).contains(b);
+    }
+
+    public String getLogs() {
+        return logs.toString();
     }
 
     private Building getBuilding(String id){

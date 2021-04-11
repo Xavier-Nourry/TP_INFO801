@@ -5,10 +5,10 @@ import java.rmi.RemoteException;
 
 public interface PassServer extends Remote {
     void triggerAlarm(String buildingId) throws RemoteException;
-    void enter(String buildingId, String passId);
-    void exit(String buildingId, String passId);
-    void createPass(String id, String firstName, String lastName, String[] authorizedBuildings);
-    void deletePass(String passId);
-    Pass[] getUsersIn(String buildingId);
-    boolean canEnter(String buildingId, String passId);
+    void enter(String buildingId, String passId) throws RemoteException;
+    void exit(String buildingId, String passId) throws RemoteException;
+    void createPass(String id, String firstName, String lastName, String[] authorizedBuildings) throws RemoteException;
+    void deletePass(String passId) throws RemoteException;
+    Pass[] getUsersIn(String buildingId) throws RemoteException;
+    boolean canEnter(String buildingId, String passId) throws RemoteException;
 }
