@@ -17,7 +17,6 @@ public class Infrastructure {
         return res;
     }
 
-    // TODO : voir où et quand join les threads
     public void runAll(){
         this.buildings.forEach((building -> building.runAll()));
     }
