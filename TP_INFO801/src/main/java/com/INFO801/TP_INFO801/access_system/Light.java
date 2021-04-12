@@ -9,7 +9,7 @@ public class Light implements Runnable {
     public static final String RED = "Red";
     public static final String LIGHTING = "Lighting";
 
-    private final String lightName;
+    public final String lightName;
 
     public Light(String readerName, String color) {
         this.lightName = readerName + " - " + color + " Light";

@@ -7,7 +7,7 @@ import org.jspace.RemoteSpace;
 abstract public class SwipeCardReader implements Runnable{
     public final static String OUT_DIRECTION = "Out";
     public final static String IN_DIRECTION = "In";
-
+    public String greenLightName;
 
     protected String direction;
     protected final String readerName;
@@ -37,7 +37,7 @@ abstract public class SwipeCardReader implements Runnable{
 
     private void monitorReading(RemoteSpace ts) {
         try {
-            Object[] request = ts.get(new ActualField(readerName), new FormalField(int.class));
+            Object[] request = ts.get(new ActualField(readerName), new FormalField(String.class));
             ts.put(buildingName, doorName, Door.CROSSING_REQUEST, direction, request[1]);
         } catch (InterruptedException e) {
             System.out.println(readerName + " : erreur while communicating with the tuple space");

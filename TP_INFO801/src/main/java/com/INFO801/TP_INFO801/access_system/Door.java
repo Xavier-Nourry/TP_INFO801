@@ -21,10 +21,18 @@ public class Door implements Runnable {
         Thread laserSensor = new Thread(new LaserSensor(doorName));
         laserSensor.start();
 
-        Thread externalSwipeCardReader = new Thread(new ExternalSwipeCardReader(buildingName, doorName));
+        ExternalSwipeCardReader extSCR = new ExternalSwipeCardReader(buildingName, doorName);
+        Thread externalSwipeCardReader = new Thread(extSCR);
         externalSwipeCardReader.start();
-        Thread internalSwipeCardReader = new Thread(new InternalSwipeCardReader(buildingName, doorName));
+        InternalSwipeCardReader inSCR = new InternalSwipeCardReader(buildingName, doorName);
+        Thread internalSwipeCardReader = new Thread(inSCR);
         internalSwipeCardReader.start();
+
+        Thread lockManager = new Thread(new LockManager(doorName, extSCR.redLightName, extSCR.greenLightName, inSCR.greenLightName));
+        lockManager.start();
+
+        Thread lockTimer= new Thread(new LockTimer(doorName));
+        lockTimer.start();
 
         RemoteSpace ts = TupleSpace.remoteSpaceConnexion(doorName);
         assert ts != null;

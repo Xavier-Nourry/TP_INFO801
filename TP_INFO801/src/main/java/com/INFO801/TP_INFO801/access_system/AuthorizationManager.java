@@ -1,17 +1,33 @@
 package com.INFO801.TP_INFO801.access_system;
 
+import com.INFO801.TP_INFO801.database_server.PassServer;
+import com.INFO801.TP_INFO801.database_server.Server;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
 public class AuthorizationManager implements Runnable {
-    private static final String OPENING_AUTHORIZATION = "OpeningAuthorization";
-    private String managerName;
-    private String buildingName;
+    public static final String OPENING_AUTHORIZATION = "OpeningAuthorization";
+    public static final String AUTHORIZED_CROSSER = "AuthorizedCrosser";
+    private final String managerName;
+    private final String buildingName;
+    private PassServer dbManager;
 
     public AuthorizationManager(String buildingName) {
         this.managerName = buildingName + " - authorizationManager";
         this.buildingName = buildingName;
+        try {
+            Registry reg = LocateRegistry.getRegistry("127.0.0.1", Server.PORT);
+            dbManager = (PassServer) reg.lookup("PassServer");
+        } catch (RemoteException | NotBoundException e) {
+            System.out.println(managerName + " : error while communicating with the db");
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -29,21 +45,24 @@ public class AuthorizationManager implements Runnable {
             Object[] request = ts.get(
                     new ActualField(buildingName), new FormalField(String.class),
                     new ActualField(Door.CROSSING_REQUEST),
-                    new FormalField(String.class),  new FormalField(int.class)
+                    new FormalField(String.class),  new FormalField(String.class)
             );
             String doorName = (String) request[1];
             String direction = (String) request[3];
-            int swipeCardId = (int) request[4];
+            String swipeCardId = (String) request[4];
             boolean authorization;
-            if (direction.equals(SwipeCardReader.OUT_DIRECTION))
+            if (direction.equals(SwipeCardReader.OUT_DIRECTION)){
                 authorization = true;
-            else
-                authorization = false; //TODO: ajouter la gestion selon la bdd
+            }
+            else{
+                authorization = dbManager.canEnter(buildingName, swipeCardId);
+            }
+            if (authorization)
+                ts.put(doorName, AUTHORIZED_CROSSER, direction, swipeCardId);
+            ts.put(doorName, OPENING_AUTHORIZATION, direction, authorization, swipeCardId);
 
-            ts.put(doorName, OPENING_AUTHORIZATION, authorization);
-
-        } catch (InterruptedException e) {
-            System.out.println(managerName + " : erreur while communicating with the tuple space");
+        } catch (InterruptedException | RemoteException e) {
+            System.out.println(managerName + " : error while communicating with the tuple space");
             e.printStackTrace();
         }
     }
