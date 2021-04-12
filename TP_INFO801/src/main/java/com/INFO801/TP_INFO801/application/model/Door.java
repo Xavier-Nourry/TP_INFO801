@@ -1,16 +1,14 @@
 package com.INFO801.TP_INFO801.application.model;
 
+import com.INFO801.TP_INFO801.access_system.TupleSpace;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
-
 import java.io.IOException;
 import java.util.Observable;
-
 import static java.lang.System.exit;
 
 public class Door extends Observable implements Agent, Runnable{
-    private String tsServerURI;
     private RemoteSpace server;
     private InsideGreenLightIndicator igli; // Inside
     private InsideRedLightIndicator irli; // Inside
@@ -19,14 +17,13 @@ public class Door extends Observable implements Agent, Runnable{
     private String id;
     private boolean open;
 
-    public Door(String buildingID, int id, String tsServerURI){
-        this.tsServerURI = tsServerURI;
+    public Door(String buildingID, int id){
+        this.id = buildingID + " - Door" + id;
         this.server = tsServerConnection();
-        this.id = buildingID + " - Door"+ id;
-        this.igli = new InsideGreenLightIndicator(this.id, this.tsServerURI);
-        this.irli = new InsideRedLightIndicator(this.id, this.tsServerURI);
-        this.ogli = new OutsideGreenLightIndicator(this.id, this.tsServerURI);
-        this.orli = new OutsideRedLightIndicator(this.id, this.tsServerURI);
+        this.igli = new InsideGreenLightIndicator(this.id);
+        this.irli = new InsideRedLightIndicator(this.id);
+        this.ogli = new OutsideGreenLightIndicator(this.id);
+        this.orli = new OutsideRedLightIndicator(this.id);
         this.open = false;
     }
 
@@ -49,10 +46,10 @@ public class Door extends Observable implements Agent, Runnable{
     }
 
     public RemoteSpace tsServerConnection(){
-        System.out.println("Connexion de "+ id + " à " + tsServerURI + "...");
+        System.out.println("Connexion de "+ id + " à " + TupleSpace.CLIENT_URI + "...");
         RemoteSpace server = null;
         try {
-            server = new RemoteSpace(tsServerURI);
+            server = new RemoteSpace(TupleSpace.CLIENT_URI);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,7 +64,7 @@ public class Door extends Observable implements Agent, Runnable{
 
     public void manageState() throws InterruptedException {
         Object[] response;
-        response = server.get(new ActualField(id), new FormalField(boolean.class));
+        response = server.get(new ActualField(id), new FormalField(Boolean.class));
         if(response != null){
             open = (boolean) response[1];
             setChanged();

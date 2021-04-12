@@ -1,5 +1,6 @@
 package com.INFO801.TP_INFO801.application.model;
 
+import com.INFO801.TP_INFO801.access_system.TupleSpace;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
@@ -11,13 +12,11 @@ import static java.lang.System.exit;
 
 public class OutsideGreenLightIndicator extends Observable implements Agent, Runnable{
     private String id;
-    private String tsServerURI;
     private RemoteSpace server;
     private boolean on;
 
-    public OutsideGreenLightIndicator(String id, String tsServerURI){
+    public OutsideGreenLightIndicator(String id){
         this.id = id + " - External Reader - Green Light";
-        this.tsServerURI = tsServerURI;
         this.server = tsServerConnection();
         this.on = false;
     }
@@ -34,10 +33,10 @@ public class OutsideGreenLightIndicator extends Observable implements Agent, Run
     }
 
     public RemoteSpace tsServerConnection(){
-        System.out.println("Connexion de "+ id + " à " + tsServerURI + "...");
+        System.out.println("Connexion de "+ id + " à " + TupleSpace.CLIENT_URI + "...");
         RemoteSpace server = null;
         try {
-            server = new RemoteSpace(tsServerURI);
+            server = new RemoteSpace(TupleSpace.CLIENT_URI);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,7 +51,7 @@ public class OutsideGreenLightIndicator extends Observable implements Agent, Run
 
     public void manageState() throws InterruptedException {
         Object[] response;
-        response = server.get(new ActualField(id), new FormalField(boolean.class));
+        response = server.get(new ActualField(id), new FormalField(Boolean.class));
         if(response != null){
             on = (boolean) response[1];
             setChanged();
