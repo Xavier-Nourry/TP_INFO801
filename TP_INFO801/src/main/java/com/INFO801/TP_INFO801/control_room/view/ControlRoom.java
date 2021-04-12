@@ -1,10 +1,13 @@
 package com.INFO801.TP_INFO801.control_room.view;
 import com.INFO801.TP_INFO801.control_room.controller.CreatePassListener;
+import com.INFO801.TP_INFO801.control_room.model.DataClient;
+import com.INFO801.TP_INFO801.control_room.model.PassListModel;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ControlRoom extends JFrame{
+    private DataClient model;
 
     public static void main(String[] args) {
         JFrame frame = new ControlRoom();
@@ -13,6 +16,8 @@ public class ControlRoom extends JFrame{
     public ControlRoom() {
         super("INFO801 - Salle de contrôle");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        model = new DataClient();
 
         Container pane = getContentPane();
         setLayout(new BoxLayout(pane, BoxLayout.LINE_AXIS));
@@ -35,6 +40,14 @@ public class ControlRoom extends JFrame{
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
+        // List panel
+        PassListModel listModel = new PassListModel(model.getPasses());
+        JList<PassInfo> list = new JList<>(listModel);
+        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        list.setLayoutOrientation(JList.VERTICAL);
+        list.setVisibleRowCount(-1);
+        
+        // Managing panel
         JPanel manager = new JPanel();
         BoxLayout managerLayout = new BoxLayout(manager, BoxLayout.PAGE_AXIS);
         manager.setLayout(managerLayout);
@@ -59,7 +72,7 @@ public class ControlRoom extends JFrame{
         manager.add(Box.createRigidArea(new Dimension(0, 5)));
         manager.add(acceptButton);
 
-        panel.add(new JLabel("TODO"), BorderLayout.CENTER);
+        panel.add(list, BorderLayout.CENTER);
         panel.add(manager, BorderLayout.PAGE_END);
 
         return panel;
