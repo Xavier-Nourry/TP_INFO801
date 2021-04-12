@@ -1,6 +1,5 @@
 package com.INFO801.TP_INFO801.application;
 
-import com.INFO801.TP_INFO801.application.model.Door;
 import com.INFO801.TP_INFO801.application.model.Infrastructure;
 
 public class App {

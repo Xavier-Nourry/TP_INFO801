@@ -4,15 +4,13 @@ import com.INFO801.TP_INFO801.access_system.TupleSpace;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
-
 import java.io.IOException;
 import java.util.Observable;
-
 import static java.lang.System.exit;
 
 public class InsideGreenLightIndicator extends Observable implements Agent, Runnable{
-    private String id;
-    private RemoteSpace server;
+    private final String id;
+    private final RemoteSpace server;
     private boolean on;
 
     public InsideGreenLightIndicator(String id){
