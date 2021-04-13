@@ -42,6 +42,15 @@ public class PassManagerClient {
         }
     }
 
+    public Pass[] getUsersIn(Building building) {
+        try {
+            return server.getUsersIn(building.id);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public void createPass(String id, String firstName, String lastName, String[] authorizedBuildings){
         try {
             server.createPass(id,firstName,lastName,authorizedBuildings);

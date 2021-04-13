@@ -16,8 +16,8 @@ public class BuildingListModel extends AbstractListModel<BuildingInfo> {
         Arrays.sort(model, Comparator.comparing(o -> o.id));
     }
 
-    public BuildingListModel(PassManagerClient client) {
-        setModel(client.getBuildings());
+    public BuildingListModel(Building[] data) {
+        setModel(data);
     }
 
     @Override

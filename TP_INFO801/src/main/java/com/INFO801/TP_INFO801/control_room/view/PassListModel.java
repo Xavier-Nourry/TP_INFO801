@@ -13,8 +13,8 @@ import java.util.Arrays;
 public class PassListModel extends AbstractListModel<PassInfo>  {
     private Pass[] model;
 
-    public PassListModel(PassManagerClient client) {
-        model = client.getPasses();
+    public PassListModel(Pass[] data) {
+        model = data;
     }
 
     @Override

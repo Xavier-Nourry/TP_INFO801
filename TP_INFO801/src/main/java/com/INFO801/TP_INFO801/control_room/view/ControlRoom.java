@@ -2,14 +2,11 @@ package com.INFO801.TP_INFO801.control_room.view;
 import com.INFO801.TP_INFO801.control_room.controller.CreatePassListener;
 import com.INFO801.TP_INFO801.control_room.controller.DeletePassListener;
 import com.INFO801.TP_INFO801.control_room.model.PassManagerClient;
+import com.INFO801.TP_INFO801.database_server.Building;
 import com.INFO801.TP_INFO801.database_server.Pass;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class ControlRoom extends JFrame{
     private final PassManagerClient model;
@@ -28,7 +25,7 @@ public class ControlRoom extends JFrame{
         setLayout(new BoxLayout(pane, BoxLayout.LINE_AXIS));
         pane.add(passPanel());
         // TODO separator
-        pane.add(buildingPanel());
+        pane.add(buildingPanel(null));
         // TODO separator
         pane.add(logPanel());
 
@@ -42,7 +39,7 @@ public class ControlRoom extends JFrame{
         panel.setLayout(new BorderLayout());
 
         // List panel
-        PassListModel listModel = new PassListModel(model);
+        PassListModel listModel = new PassListModel(model.getPasses());
         // subscribe the model to a property listener in the model
         model.addPropertyChangeListener(new PassPropertyListener(listModel));
 
@@ -85,13 +82,13 @@ public class ControlRoom extends JFrame{
         return panel;
     }
 
-    private JPanel buildingPanel(){
+    private JPanel buildingPanel(Building building){
         JPanel panel = new JPanel();
         BorderLayout layout = new BorderLayout();
         panel.setLayout(layout);
 
         JPanel buildingList = buildingListPanel();
-        JPanel userList = userListPanel();
+        JPanel userList = userListPanel(building);
 
         panel.add(buildingList, BorderLayout.LINE_START);
         panel.add(userList, BorderLayout.CENTER);
@@ -105,7 +102,7 @@ public class ControlRoom extends JFrame{
         buildingListPanel.setLayout(listLayout);
 
         // List panel
-        BuildingListModel listModel = new BuildingListModel(model);
+        BuildingListModel listModel = new BuildingListModel(model.getBuildings());
         // subscribe the model to a property listener in the model
         model.addPropertyChangeListener(new BuildingPropertyListener(listModel));
 
@@ -117,14 +114,20 @@ public class ControlRoom extends JFrame{
         return buildingListPanel;
     }
 
-    private JPanel userListPanel(){
-        JPanel userList = new JPanel();
+    private JPanel userListPanel(Building building){
 
-        // TODO List panel
-
-        // TODO ###
-
-        return userList;
+        JPanel userListPanel = new JPanel();
+        if(building == null){
+            userListPanel.add(new Label("Pas de bâtiment sélectionné."));
+        } else {
+            PassListModel listModel = new PassListModel(model.getUsersIn(building));
+            JList<PassInfo> userList = new JList<>(listModel);
+            model.addPropertyChangeListener(new BuildingUserListChangedListener(building, listModel));
+            userList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+            userList.setLayoutOrientation(JList.VERTICAL);
+            userListPanel.add(userList);
+        }
+        return userListPanel;
     }
 
     private JPanel logPanel(){
