@@ -64,4 +64,8 @@ public class Door implements Runnable {
             e.printStackTrace();
         }
     }
+
+    public String getId() {
+        return doorName;
+    }
 }

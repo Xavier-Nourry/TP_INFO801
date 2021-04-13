@@ -7,7 +7,6 @@ public class FireManager implements Runnable {
     public static final String FIRE_ALARM_ON = "FireAlarmOn";
     public static final String FIRE_ALARM_OFF = "FireAlarmOff";
     public static final String DOOR_RELEASE = "DoorRelease";
-    public static final String ALL_DOORS_LOCKED = "allDoorsLocked";
     public static final String FIRE_END = "FireEnd";
     private final String buildingName;
 
@@ -17,6 +16,8 @@ public class FireManager implements Runnable {
 
     @Override
     public void run() {
+        new Thread(new FireDetector(buildingName)).start();
+        new Thread(new FireAlarm(buildingName)).start();
         RemoteSpace ts = TupleSpace.remoteSpaceConnexion(buildingName);
         assert ts != null;
         while (true){
@@ -29,11 +30,11 @@ public class FireManager implements Runnable {
             ts.get(new ActualField(buildingName), new ActualField(FireDetector.FIRE_DETECTED));
             ts.put(buildingName, FIRE_ALARM_ON);
             ts.put(buildingName, DOOR_RELEASE);
-            ts.put(buildingName, ALL_DOORS_LOCKED, false);
+            ts.put(buildingName, Building.ALL_DOORS_LOCKED, false);
             //TODO: ajouter la communication avec la bdd
             ts.get(new ActualField(buildingName), new ActualField(FIRE_END));
             ts.get(new ActualField(buildingName), new ActualField(DOOR_RELEASE));
-            ts.put(buildingName, ALL_DOORS_LOCKED, true);
+            ts.put(buildingName, Building.ALL_DOORS_LOCKED, true);
             ts.put(buildingName, FIRE_ALARM_OFF);
 
         } catch (InterruptedException e) {

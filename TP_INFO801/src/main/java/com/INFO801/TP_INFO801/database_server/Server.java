@@ -1,8 +1,6 @@
 package com.INFO801.TP_INFO801.database_server;
 
 
-import com.INFO801.TP_INFO801.database_server.PassServer;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -20,8 +18,8 @@ public class Server implements PassServer {
     }
 
     private void setup(){
-        manager.createBuilding("LABOS");
-        manager.createBuilding("LAUZIERES");
+        manager.createBuilding("LABOS", 2);
+        manager.createBuilding("LAUZIERES", 2);
         manager.createPass("1","Jean","Valjean",new String[]{"LAUZIERES"});
         manager.createPass("2","Julien","Sorel",new String[]{"LABOS","LAUZIERES"});
     }

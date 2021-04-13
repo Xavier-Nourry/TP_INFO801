@@ -7,50 +7,62 @@ import org.jspace.RemoteSpace;
 import java.util.ArrayList;
 
 public class Building implements Runnable {
-    private final String buildingName;
-    private final int nbDoors;
+    protected static final String ALL_DOORS_LOCKED = "allDoorsLocked";
 
-    private final ArrayList<String> doorNames;
+    private final String buildingID;
+    private final ArrayList<Door> doors;
+    private final RemoteSpace ts;
 
-    public Building(String buildingName, int nbDoors) {
-        doorNames = new ArrayList<>();
-        this.buildingName = buildingName;
-        this.nbDoors = nbDoors;
+    public Building(com.INFO801.TP_INFO801.database_server.Building dbBuilding) {
+        buildingID = dbBuilding.id;
+        doors = new ArrayList<>();
+        // On crée toutes les portes du bâtiment
+        for (int nbDoor = 1; nbDoor <= dbBuilding.nbDoors; nbDoor++)
+            doors.add(new Door(buildingID, nbDoor));
+
+        // Connexion à l'espace de tuple
+        ts = TupleSpace.remoteSpaceConnexion(buildingID);
     }
 
     @Override
     public void run() {
-        Door door;
-        for (int i = 1; i <= nbDoors; i++) {
-            door = new Door(buildingName, i);
-            doorNames.add(door.doorName);
+        // On lance les processus des gestion des portes
+        for (Door door: doors)
             new Thread(door).start();
-        }
 
-        new Thread(new FireDetector(buildingName)).start();
-        new Thread(new FireManager(buildingName)).start();
-        new Thread(new FireAlarm(buildingName)).start();
+        // On lance le processus de gestion d'incendie
+        new Thread(new FireManager(buildingID)).start();
 
-        Thread authorizationsManager = new Thread((new AuthorizationManager(buildingName)));
-        authorizationsManager.start();
-        RemoteSpace ts = TupleSpace.remoteSpaceConnexion(buildingName);
-        assert ts != null;
+        // On lance le processus de gestion des autorisations
+        AuthorizationManager authorizationsManager = new AuthorizationManager(buildingID);
+        new Thread(authorizationsManager).start();
 
-        while (true){
-            this.monitorDoorsManagement(ts);
-        }
+        monitorBuilding();
     }
 
-    private void monitorDoorsManagement(RemoteSpace ts) {
+    // Gestion de l'ensemble des portes du bâtiment
+    private void monitorBuilding() {
         try {
-            Object[] doorsAction = ts.get(new ActualField(buildingName), new ActualField(FireManager.ALL_DOORS_LOCKED), new FormalField(boolean.class));
-            boolean locked = (boolean) doorsAction[2];
-            for (String doorName : doorNames) {
-                ts.put(doorName, (Door.LOCKING), locked);
-            }
-
+            monitorDoorsManagement();
         } catch (InterruptedException e) {
+            System.out.println(buildingID + " : error while communicating with the tuple space");
             e.printStackTrace();
+            return;
         }
+
+        monitorBuilding(); // S'appelle récursivement
+
+    }
+
+    // Gestion de l'ensemble des portes du bâtiment
+    private void monitorDoorsManagement() throws InterruptedException {
+        Object[] action = ts.get(
+                new ActualField(buildingID),
+                new ActualField(ALL_DOORS_LOCKED),
+                new FormalField(Boolean.class));
+
+        Boolean doorsLocked = (Boolean) action[2];
+        for (Door door: doors)
+            ts.put(door.getId(), Door.LOCKING, doorsLocked);
     }
 }

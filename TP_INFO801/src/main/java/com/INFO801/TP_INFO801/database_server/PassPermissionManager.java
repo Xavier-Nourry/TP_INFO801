@@ -17,10 +17,10 @@ public class PassPermissionManager {
         logs = new EntryLogger();
     }
 
-    public void createBuilding(String buildingId) {
+    public void createBuilding(String buildingId, int nbDoors) {
         //avoid duplicates
         if(buildings.stream().anyMatch(building -> building.id.equals(buildingId))) return;
-        Building b = new Building(buildingId);
+        Building b = new Building(buildingId, nbDoors);
         buildings.add(b);
         peopleCurrentlyIn.put(b, new ArrayList<>());
     }
