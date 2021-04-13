@@ -9,6 +9,10 @@ public class BuildingInfo {
         this.data = data;
     }
 
+    public Building getBuilding() {
+        return data;
+    }
+
     @Override
     public String toString() {
         return "["+" "+"] "+data.id;

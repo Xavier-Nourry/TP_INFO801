@@ -6,6 +6,8 @@ import com.INFO801.TP_INFO801.database_server.Building;
 import com.INFO801.TP_INFO801.database_server.Pass;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 public class ControlRoom extends JFrame{
@@ -25,7 +27,7 @@ public class ControlRoom extends JFrame{
         setLayout(new BoxLayout(pane, BoxLayout.LINE_AXIS));
         pane.add(passPanel());
         // TODO separator
-        pane.add(buildingPanel(null));
+        pane.add(buildingPanel());
         // TODO separator
         pane.add(logPanel());
 
@@ -82,18 +84,18 @@ public class ControlRoom extends JFrame{
         return panel;
     }
 
-    private JPanel buildingPanel(Building building){
-        JPanel panel = new JPanel();
+    private JPanel buildingPanel(){
+        JPanel userListParentPanel = new JPanel();
         BorderLayout layout = new BorderLayout();
-        panel.setLayout(layout);
+        userListParentPanel.setLayout(layout);
 
         JPanel buildingList = buildingListPanel();
-        JPanel userList = userListPanel(building);
+        JPanel userListPanel = userListPanel(null);
 
-        panel.add(buildingList, BorderLayout.LINE_START);
-        panel.add(userList, BorderLayout.CENTER);
+        userListParentPanel.add(buildingList, BorderLayout.LINE_START);
+        userListParentPanel.add(userListPanel, BorderLayout.CENTER);
 
-        return panel;
+        return userListParentPanel;
     }
 
     private JPanel buildingListPanel(){
@@ -115,14 +117,13 @@ public class ControlRoom extends JFrame{
     }
 
     private JPanel userListPanel(Building building){
-
         JPanel userListPanel = new JPanel();
         if(building == null){
             userListPanel.add(new Label("Pas de bâtiment sélectionné."));
         } else {
-            PassListModel listModel = new PassListModel(model.getUsersIn(building));
-            JList<PassInfo> userList = new JList<>(listModel);
-            model.addPropertyChangeListener(new BuildingUserListChangedListener(building, listModel));
+            PassListModel userListModel = new PassListModel(model.getUsersIn(building));
+            JList<PassInfo> userList = new JList<>(userListModel);
+            model.addPropertyChangeListener(new BuildingUserListChangedListener(building, userListModel));
             userList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
             userList.setLayoutOrientation(JList.VERTICAL);
             userListPanel.add(userList);

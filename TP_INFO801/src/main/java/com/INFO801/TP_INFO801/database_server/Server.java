@@ -24,6 +24,8 @@ public class Server implements PassServer {
         manager.createBuilding("LAUZIERES");
         manager.createPass("1","Jean","Valjean",new String[]{"LAUZIERES"});
         manager.createPass("2","Julien","Sorel",new String[]{"LABOS","LAUZIERES"});
+        manager.notifyEntrance("LABOS","2");
+        manager.notifyEntrance("LAUZIERES","1");
     }
 
     public static void main(String[] args){
