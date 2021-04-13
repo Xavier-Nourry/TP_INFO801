@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 
 public interface PassServer extends Remote {
     void triggerAlarm(String buildingId) throws RemoteException;
+    void shutOffAlarm(String buildingId) throws RemoteException;
     void enter(String buildingId, String passId) throws RemoteException;
     void exit(String buildingId, String passId) throws RemoteException;
     void createPass(String id, String firstName, String lastName, String[] authorizedBuildings) throws RemoteException;
