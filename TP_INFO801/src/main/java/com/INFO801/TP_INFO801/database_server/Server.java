@@ -1,16 +1,11 @@
 package com.INFO801.TP_INFO801.database_server;
 
-
-import com.INFO801.TP_INFO801.database_server.PassServer;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.Date;
-
-import static java.util.stream.Collectors.toList;
 
 public class Server implements PassServer {
 

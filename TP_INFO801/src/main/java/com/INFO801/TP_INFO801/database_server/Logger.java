@@ -11,19 +11,19 @@ public class Logger {
     }
 
     public void logEntrance(Building b, Pass p, Date d){
-        logs.add(new EnterExitLogEntry("ENTER", d, b, p));
+        logs.add(new LogEntry("ENTER", b.id+", "+p.firstName+" "+p.lastName ,d));
     }
 
     public void logExit(Building b, Pass p, Date d){
-        logs.add(new EnterExitLogEntry("EXIT", d, b, p));
+        logs.add(new LogEntry("EXIT", b.id+", "+p.firstName+" "+p.lastName, d));
     }
 
     public void logFireAlarm(Building b, Date d) {
-        logs.add(new AlarmEntry("FIRE_ON", d, b));
+        logs.add(new LogEntry("FIRE_ON", b.id ,d));
     }
 
     public void logStopFireAlarm(Building b, Date d) {
-        logs.add(new AlarmEntry("FIRE_OFF", d, b));
+        logs.add(new LogEntry("FIRE_OFF", b.id ,d));
     }
 
     @Override

@@ -133,7 +133,14 @@ public class ControlRoom extends JFrame{
 
     private JPanel logPanel(){
         JPanel panel = new JPanel();
-        panel.add(new Label("LOGS"));
+
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        listModel.addAll(model.getLogsAsString());
+        // property change listener
+        JList<String> list = new JList<>(listModel);
+        list.setLayoutOrientation(JList.VERTICAL);
+        panel.add(list);
+
         return panel;
     }
 }

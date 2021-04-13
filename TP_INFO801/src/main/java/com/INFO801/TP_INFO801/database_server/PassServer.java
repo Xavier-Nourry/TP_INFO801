@@ -15,7 +15,6 @@ public interface PassServer extends Remote {
     Building[] getBuildings() throws RemoteException;
     Pass[] getPasses() throws RemoteException;
     boolean canEnter(String buildingId, String passId) throws RemoteException;
-    LogEntry[] getLogs();
-
-    LogEntry[] getLogsAfter(Date begin);
+    LogEntry[] getLogs() throws RemoteException;
+    LogEntry[] getLogsAfter(Date begin) throws RemoteException;
 }

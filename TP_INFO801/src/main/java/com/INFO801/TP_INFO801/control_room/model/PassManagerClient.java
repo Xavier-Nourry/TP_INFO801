@@ -1,15 +1,16 @@
 package com.INFO801.TP_INFO801.control_room.model;
 
-import com.INFO801.TP_INFO801.database_server.Building;
-import com.INFO801.TP_INFO801.database_server.Pass;
-import com.INFO801.TP_INFO801.database_server.PassServer;
-import com.INFO801.TP_INFO801.database_server.Server;
+import com.INFO801.TP_INFO801.database_server.*;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PassManagerClient {
     private PassServer server;
@@ -75,5 +76,14 @@ public class PassManagerClient {
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         changes.removePropertyChangeListener(listener);
+    }
+
+    public List<String> getLogsAsString() {
+        try {
+            return Arrays.stream(server.getLogs()).map(LogEntry::toString).collect(Collectors.toList());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
