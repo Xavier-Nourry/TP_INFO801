@@ -5,12 +5,19 @@ import com.INFO801.TP_INFO801.database_server.Building;
 import com.INFO801.TP_INFO801.database_server.Pass;
 
 import javax.swing.*;
+import java.util.Arrays;
+import java.util.Comparator;
 
-public class BuildingListModel extends AbstractListModel<Building> {
+public class BuildingListModel extends AbstractListModel<BuildingInfo> {
     private Building[] model;
 
+    private void setModel(Building[] data){
+        this.model = data;
+        Arrays.sort(model, Comparator.comparing(o -> o.id));
+    }
+
     public BuildingListModel(PassManagerClient client) {
-        model = client.getBuildings();
+        setModel(client.getBuildings());
     }
 
     @Override
@@ -19,7 +26,12 @@ public class BuildingListModel extends AbstractListModel<Building> {
     }
 
     @Override
-    public Building getElementAt(int index) {
-        return model[index];
+    public BuildingInfo getElementAt(int index) {
+        return new BuildingInfo(model[index]);
+    }
+
+    public void update(Building[] content) {
+        setModel(content);
+        fireContentsChanged(this, 0, content.length);
     }
 }

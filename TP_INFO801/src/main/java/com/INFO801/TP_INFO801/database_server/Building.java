@@ -1,6 +1,8 @@
 package com.INFO801.TP_INFO801.database_server;
 
-public class Building {
+import java.io.Serializable;
+
+public class Building implements Serializable {
     public String id;
 
     public Building(String id){

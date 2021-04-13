@@ -100,21 +100,21 @@ public class ControlRoom extends JFrame{
     }
 
     private JPanel buildingListPanel(){
-        JPanel buildingList = new JPanel();
-        BoxLayout listLayout = new BoxLayout(buildingList, BoxLayout.PAGE_AXIS);
-        buildingList.setLayout(listLayout);
+        JPanel buildingListPanel = new JPanel();
+        BoxLayout listLayout = new BoxLayout(buildingListPanel, BoxLayout.PAGE_AXIS);
+        buildingListPanel.setLayout(listLayout);
 
-        // TODO List panel
+        // List panel
+        BuildingListModel listModel = new BuildingListModel(model);
+        // subscribe the model to a property listener in the model
+        model.addPropertyChangeListener(new BuildingPropertyListener(listModel));
 
-        // TODO ###
+        JList<BuildingInfo> list = new JList<>(listModel);
+        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        list.setLayoutOrientation(JList.VERTICAL);
 
-
-        // TODO List panel
-
-        // TODO ###
-
-
-        return buildingList;
+        buildingListPanel.add(list);
+        return buildingListPanel;
     }
 
     private JPanel userListPanel(){
