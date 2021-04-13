@@ -9,7 +9,7 @@ public class Door implements Runnable {
     public static final String LOCKING = "Locking";
     public static final String CROSSING_REQUEST = "CrossingRequest";
     private final String buildingName;
-    private final String doorName;
+    public final String doorName;
 
     public Door(String buildingName, int doorNumber) {
         this.buildingName = buildingName;
@@ -34,6 +34,8 @@ public class Door implements Runnable {
         Thread lockTimer= new Thread(new LockTimer(doorName));
         lockTimer.start();
 
+        new Thread((new CrossingManager(buildingName, doorName))).start();
+
         RemoteSpace ts = TupleSpace.remoteSpaceConnexion(doorName);
         assert ts != null;
 
@@ -54,7 +56,9 @@ public class Door implements Runnable {
     private void monitorLocking(RemoteSpace ts) {
         try {
             Object[] locked = ts.get(new ActualField(doorName), new ActualField(LOCKING), new FormalField(boolean.class));
-            ts.put(doorName, locked[2]);
+            Object[] blockedLocking = ts.queryp(new ActualField(buildingName), new ActualField(FireManager.DOOR_RELEASE));
+            if (!(boolean)locked[2] || blockedLocking == null)
+                ts.put(doorName, locked[2]);
         } catch (InterruptedException e) {
             System.out.println(doorName + " : erreur while communicating with the tuple space");
             e.printStackTrace();
