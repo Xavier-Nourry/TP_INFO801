@@ -5,13 +5,15 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Arrays;
+import java.util.Date;
 
 public class Server implements PassServer {
 
     public static final String HOST = "127.0.0.1";
     public static final int PORT = 1099;
 
-    private PassPermissionManager manager;
+    private final PassPermissionManager manager;
 
     private Server(){
         manager = new PassPermissionManager();
@@ -22,6 +24,10 @@ public class Server implements PassServer {
         manager.createBuilding("LAUZIERES", 2);
         manager.createPass("1","Jean","Valjean",new String[]{"LAUZIERES"});
         manager.createPass("2","Julien","Sorel",new String[]{"LABOS","LAUZIERES"});
+        manager.notifyEntrance("LABOS","2");
+        manager.notifyEntrance("LAUZIERES","1");
+        manager.triggerAlarm("LABOS");
+        manager.shutOffAlarm("LABOS");
     }
 
     public static void main(String[] args){
@@ -38,7 +44,12 @@ public class Server implements PassServer {
 
     @Override
     public void triggerAlarm(String buildingId) throws RemoteException {
+        manager.triggerAlarm(buildingId);
+    }
 
+    @Override
+    public void shutOffAlarm(String buildingId) throws RemoteException {
+        manager.shutOffAlarm(buildingId);
     }
 
     @Override
@@ -83,5 +94,15 @@ public class Server implements PassServer {
     @Override
     public boolean canEnter(String buildingId, String passId) {
         return manager.isAllowed(buildingId, passId);
+    }
+
+    @Override
+    public LogEntry[] getLogs(){
+        return manager.getLogs();
+    }
+
+    @Override
+    public LogEntry[] getLogsAfter(Date begin){
+        return (LogEntry[])Arrays.stream(manager.getLogs()).filter(l -> l.d.getTime()>=begin.getTime()).toArray();
     }
 }

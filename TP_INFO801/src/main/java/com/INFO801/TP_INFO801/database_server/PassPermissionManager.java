@@ -7,14 +7,14 @@ public class PassPermissionManager {
     public ArrayList<Pass> passes;
     private final HashMap<Pass, ArrayList<Building>> permissions;
     private final HashMap<Building, ArrayList<Pass>> peopleCurrentlyIn;
-    private final EntryLogger logs;
+    private final Logger logs;
 
     public PassPermissionManager(){
         buildings = new ArrayList<>();
         passes = new ArrayList<>();
         permissions = new HashMap<>();
         peopleCurrentlyIn = new HashMap<>();
-        logs = new EntryLogger();
+        logs = new Logger();
     }
 
     public void createBuilding(String buildingId, int nbDoors) {
@@ -73,6 +73,22 @@ public class PassPermissionManager {
         }
     }
 
+    public void triggerAlarm(String buildingId) {
+        Building b = getBuilding(buildingId);
+        if(b!=null){
+            b.isOnAlarm = true;
+            logs.logFireAlarm(b, new Date(System.currentTimeMillis()));
+        }
+    }
+
+    public void shutOffAlarm(String buildingId) {
+        Building b = getBuilding(buildingId);
+        if(b!=null){
+            b.isOnAlarm = false;
+            logs.logStopFireAlarm(b, new Date(System.currentTimeMillis()));
+        }
+    }
+
     public Pass[] getUsersIn(String buildingId) {
         Building b = getBuilding(buildingId);
         if(b == null) return new Pass[0];
@@ -88,8 +104,8 @@ public class PassPermissionManager {
         return permissions.get(p).contains(b);
     }
 
-    public String getLogs() {
-        return logs.toString();
+    public LogEntry[] getLogs() {
+        return logs.logs.toArray(new LogEntry[0]);
     }
 
     private Building getBuilding(String id){
