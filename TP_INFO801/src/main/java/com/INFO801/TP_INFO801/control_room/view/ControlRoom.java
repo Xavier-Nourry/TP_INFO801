@@ -3,17 +3,15 @@ import com.INFO801.TP_INFO801.control_room.controller.BuildingSelectedListener;
 import com.INFO801.TP_INFO801.control_room.controller.CreatePassListener;
 import com.INFO801.TP_INFO801.control_room.controller.DeletePassListener;
 import com.INFO801.TP_INFO801.control_room.model.PassManagerClient;
-import com.INFO801.TP_INFO801.database_server.Building;
 import com.INFO801.TP_INFO801.database_server.Pass;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
 public class ControlRoom extends JFrame{
     private final PassManagerClient model;
     private PassListModel userListModel;
+    private JList<BuildingInfo> buildingList;
 
     public static void main(String[] args) {
         JFrame frame = new ControlRoom();
@@ -112,20 +110,20 @@ public class ControlRoom extends JFrame{
         // subscribe the model to a property listener in the model
         model.addPropertyChangeListener(new BuildingPropertyListener(listModel));
 
-        JList<BuildingInfo> list = new JList<>(listModel);
-        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        list.setLayoutOrientation(JList.VERTICAL);
+        buildingList = new JList<>(listModel);
+        buildingList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        buildingList.setLayoutOrientation(JList.VERTICAL);
 
-        list.addListSelectionListener(new BuildingSelectedListener(model, userListModel, list));
+        buildingList.addListSelectionListener(new BuildingSelectedListener(model, userListModel, buildingList));
 
-        buildingListPanel.add(list);
+        buildingListPanel.add(buildingList);
         return buildingListPanel;
     }
 
     private JPanel userListPanel(){
         JPanel userListPanel = new JPanel();
         JList<PassInfo> userList = new JList<>(userListModel);
-        model.addPropertyChangeListener(new BuildingUserListChangedListener(userListModel));
+        model.addPropertyChangeListener(new BuildingUserListChangedListener(model,userListModel, buildingList));
         userList.setLayoutOrientation(JList.VERTICAL);
         userListPanel.add(userList);
         return userListPanel;

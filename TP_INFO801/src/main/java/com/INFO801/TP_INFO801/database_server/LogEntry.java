@@ -8,6 +8,10 @@ public class LogEntry implements Serializable {
     protected final String info;
     protected final Date d;
 
+    public String getType() {
+        return type;
+    }
+
     public LogEntry(String type, String info, Date d) {
         this.type = type;
         this.info = info;

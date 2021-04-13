@@ -7,6 +7,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.Date;
 
+import static java.util.stream.Collectors.toList;
+
 public class Server implements PassServer {
 
     public static final String HOST = "127.0.0.1";
@@ -102,6 +104,6 @@ public class Server implements PassServer {
 
     @Override
     public LogEntry[] getLogsAfter(Date begin){
-        return (LogEntry[])Arrays.stream(manager.getLogs()).filter(l -> l.d.getTime()>=begin.getTime()).toArray();
+        return Arrays.stream(manager.getLogs()).filter(l -> l.d.getTime() >= begin.getTime()).toArray(LogEntry[]::new);
     }
 }

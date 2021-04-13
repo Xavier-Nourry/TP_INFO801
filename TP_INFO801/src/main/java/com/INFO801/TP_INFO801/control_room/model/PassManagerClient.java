@@ -9,7 +9,11 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class PassManagerClient {
@@ -20,8 +24,47 @@ public class PassManagerClient {
         try{
             Registry reg = LocateRegistry.getRegistry(Server.HOST,Server.PORT);
             server = (PassServer) reg.lookup("PassServer");
+
+            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+            scheduler.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        checkUpdates();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, 0, 1, TimeUnit.SECONDS);
+
         } catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    private void checkUpdates() throws RemoteException {
+        Date currentTime = new Date(System.currentTimeMillis());
+        LogEntry[] newLogs = server.getLogsAfter(currentTime);
+        String[] typesToUpdate = Arrays.stream(newLogs).map(LogEntry::getType).distinct().toArray(String[]::new);
+
+        if(typesToUpdate.length>0){
+            changes.firePropertyChange("logs", null, server.getPasses());
+        }
+
+        for(String type : typesToUpdate){
+            switch (type) {
+                case "ENTER":
+                case "EXIT":
+                    changes.firePropertyChange("users", null, null);
+                    break;
+                case "FIRE_ON":
+                case "FIRE_OFF":
+                    changes.firePropertyChange("buildings", null, server.getBuildings());
+                    break;
+                default:
+
+                    break;
+            }
         }
     }
 
