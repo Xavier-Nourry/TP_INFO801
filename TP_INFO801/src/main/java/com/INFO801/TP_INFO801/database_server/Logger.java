@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Logger {
-    private final ArrayList<LogEntry> logs;
+    public final ArrayList<LogEntry> logs;
 
     public Logger(){
         logs = new ArrayList<>();

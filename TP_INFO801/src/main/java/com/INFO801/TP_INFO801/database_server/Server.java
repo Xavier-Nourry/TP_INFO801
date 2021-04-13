@@ -7,6 +7,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Arrays;
+import java.util.Date;
+
+import static java.util.stream.Collectors.toList;
 
 public class Server implements PassServer {
 
@@ -94,5 +98,15 @@ public class Server implements PassServer {
     @Override
     public boolean canEnter(String buildingId, String passId) {
         return manager.isAllowed(buildingId, passId);
+    }
+
+    @Override
+    public LogEntry[] getLogs(){
+        return manager.getLogs();
+    }
+
+    @Override
+    public LogEntry[] getLogsAfter(Date begin){
+        return (LogEntry[])Arrays.stream(manager.getLogs()).filter(l -> l.d.getTime()>=begin.getTime()).toArray();
     }
 }

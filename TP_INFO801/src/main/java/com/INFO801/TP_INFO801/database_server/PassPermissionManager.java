@@ -104,8 +104,8 @@ public class PassPermissionManager {
         return permissions.get(p).contains(b);
     }
 
-    public String getLogs() {
-        return logs.toString();
+    public LogEntry[] getLogs() {
+        return logs.logs.toArray(new LogEntry[0]);
     }
 
     private Building getBuilding(String id){
