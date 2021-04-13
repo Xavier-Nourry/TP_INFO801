@@ -27,17 +27,13 @@ public class ControlRoom extends JFrame{
         Container pane = getContentPane();
         setLayout(new BoxLayout(pane, BoxLayout.LINE_AXIS));
         pane.add(passPanel());
-        pane.add(new JSeparator());
+        // TODO separator
         pane.add(buildingPanel());
-        pane.add(new JSeparator());
+        // TODO separator
         pane.add(logPanel());
 
-        // on demande d'attribuer une taille minimale à la fenêtre
-        //  (juste assez pour voir tous les composants)
         pack();
-        // on centre la fenêtre
         setLocationRelativeTo(null);
-        // on rend la fenêtre visible
         setVisible(true);
     }
 
@@ -46,10 +42,7 @@ public class ControlRoom extends JFrame{
         panel.setLayout(new BorderLayout());
 
         // List panel
-        DefaultListModel<PassInfo> listModel = new DefaultListModel<>();
-        for(Pass p : model.getPasses()){
-            listModel.addElement(new PassInfo(p));
-        }
+        PassListModel listModel = new PassListModel(model);
         // subscribe the model to a property listener in the model
         model.addPropertyChangeListener(new PassPropertyListener(listModel));
 
@@ -94,8 +87,44 @@ public class ControlRoom extends JFrame{
 
     private JPanel buildingPanel(){
         JPanel panel = new JPanel();
-        panel.add(new Label("buildings"));
+        BorderLayout layout = new BorderLayout();
+        panel.setLayout(layout);
+
+        JPanel buildingList = buildingListPanel();
+        JPanel userList = userListPanel();
+
+        panel.add(buildingList, BorderLayout.LINE_START);
+        panel.add(userList, BorderLayout.CENTER);
+
         return panel;
+    }
+
+    private JPanel buildingListPanel(){
+        JPanel buildingList = new JPanel();
+        BoxLayout listLayout = new BoxLayout(buildingList, BoxLayout.PAGE_AXIS);
+        buildingList.setLayout(listLayout);
+
+        // TODO List panel
+
+        // TODO ###
+
+
+        // TODO List panel
+
+        // TODO ###
+
+
+        return buildingList;
+    }
+
+    private JPanel userListPanel(){
+        JPanel userList = new JPanel();
+
+        // TODO List panel
+
+        // TODO ###
+
+        return userList;
     }
 
     private JPanel logPanel(){

@@ -11,18 +11,16 @@ import java.util.stream.Collectors;
 
 public class PassPropertyListener implements PropertyChangeListener {
 
-    private final DefaultListModel<PassInfo> list;
+    private final PassListModel list;
 
-    public PassPropertyListener(DefaultListModel<PassInfo> list){
+    public PassPropertyListener(PassListModel list){
         this.list = list;
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if(evt.getPropertyName().equals("passes")){
-            List<PassInfo> content = Arrays.stream(((Pass[])evt.getNewValue())).map(PassInfo::new).collect(Collectors.toList());
-            list.clear();
-            list.addAll(content);
+            list.update((Pass[])evt.getNewValue());
         }
     }
 }

@@ -26,4 +26,9 @@ public class PassListModel extends AbstractListModel<PassInfo>  {
     public PassInfo getElementAt(int index) {
         return new PassInfo(model[index]);
     }
+
+    public void update(Pass[] content) {
+        model = content;
+        fireContentsChanged(this, 0, content.length);
+    }
 }

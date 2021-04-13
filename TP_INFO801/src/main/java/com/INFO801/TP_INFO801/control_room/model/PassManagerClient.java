@@ -1,5 +1,6 @@
 package com.INFO801.TP_INFO801.control_room.model;
 
+import com.INFO801.TP_INFO801.database_server.Building;
 import com.INFO801.TP_INFO801.database_server.Pass;
 import com.INFO801.TP_INFO801.database_server.PassServer;
 import com.INFO801.TP_INFO801.database_server.Server;
@@ -26,6 +27,15 @@ public class PassManagerClient {
     public Pass[] getPasses(){
         try {
             return server.getPasses();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Building[] getBuildings() {
+        try {
+            return server.getBuildings();
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;
