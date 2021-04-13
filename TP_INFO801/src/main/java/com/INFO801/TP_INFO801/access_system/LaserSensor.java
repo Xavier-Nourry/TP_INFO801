@@ -25,7 +25,7 @@ public class LaserSensor implements Runnable {
     private void monitorCrossing(RemoteSpace ts) {
         try {
             ts.get(new ActualField(sensorName));
-            ts.put(doorName, Door.CROSSING);
+            ts.put(doorName, CrossingManager.CROSSING);
         } catch (InterruptedException e) {
             System.out.println(sensorName + " : error while communicating with the tuple space");
             e.printStackTrace();

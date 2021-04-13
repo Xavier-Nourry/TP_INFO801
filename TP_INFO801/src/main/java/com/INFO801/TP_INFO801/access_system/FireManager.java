@@ -6,7 +6,6 @@ import org.jspace.RemoteSpace;
 public class FireManager implements Runnable {
     public static final String FIRE_ALARM_ON = "FireAlarmOn";
     public static final String FIRE_ALARM_OFF = "FireAlarmOff";
-    public static final String DOOR_RELEASE = "DoorRelease";
     public static final String FIRE_END = "FireEnd";
     private final String buildingName;
 
@@ -29,11 +28,11 @@ public class FireManager implements Runnable {
         try {
             ts.get(new ActualField(buildingName), new ActualField(FireDetector.FIRE_DETECTED));
             ts.put(buildingName, FIRE_ALARM_ON);
-            ts.put(buildingName, DOOR_RELEASE);
+            ts.put(buildingName, Building.DOOR_RELEASE);
             ts.put(buildingName, Building.ALL_DOORS_LOCKED, false);
             //TODO: ajouter la communication avec la bdd
             ts.get(new ActualField(buildingName), new ActualField(FIRE_END));
-            ts.get(new ActualField(buildingName), new ActualField(DOOR_RELEASE));
+            ts.get(new ActualField(buildingName), new ActualField(Building.DOOR_RELEASE));
             ts.put(buildingName, Building.ALL_DOORS_LOCKED, true);
             ts.put(buildingName, FIRE_ALARM_OFF);
 

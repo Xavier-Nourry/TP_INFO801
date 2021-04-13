@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class Building implements Runnable {
     protected static final String ALL_DOORS_LOCKED = "allDoorsLocked";
+    protected static final String DOOR_RELEASE = "DoorRelease";
 
     private final String buildingID;
     private final ArrayList<Door> doors;
@@ -37,11 +38,11 @@ public class Building implements Runnable {
         AuthorizationManager authorizationsManager = new AuthorizationManager(buildingID);
         new Thread(authorizationsManager).start();
 
-        monitorBuilding();
+        monitor();
     }
 
     // Gestion de l'ensemble des portes du bâtiment
-    private void monitorBuilding() {
+    private void monitor() {
         try {
             monitorDoorsManagement();
         } catch (InterruptedException e) {
@@ -50,7 +51,7 @@ public class Building implements Runnable {
             return;
         }
 
-        monitorBuilding(); // S'appelle récursivement
+        monitor(); // S'appelle récursivement
 
     }
 
@@ -59,7 +60,8 @@ public class Building implements Runnable {
         Object[] action = ts.get(
                 new ActualField(buildingID),
                 new ActualField(ALL_DOORS_LOCKED),
-                new FormalField(Boolean.class));
+                new FormalField(Boolean.class)
+        );
 
         Boolean doorsLocked = (Boolean) action[2];
         for (Door door: doors)

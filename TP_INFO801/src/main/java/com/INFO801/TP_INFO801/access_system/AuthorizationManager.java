@@ -44,7 +44,7 @@ public class AuthorizationManager implements Runnable {
         try {
             Object[] request = ts.get(
                     new ActualField(buildingName), new FormalField(String.class),
-                    new ActualField(Door.CROSSING_REQUEST),
+                    new ActualField(CrossingManager.CROSSING_REQUEST),
                     new FormalField(String.class),  new FormalField(String.class)
             );
             String doorName = (String) request[1];

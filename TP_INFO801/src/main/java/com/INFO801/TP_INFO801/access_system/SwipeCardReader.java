@@ -38,7 +38,7 @@ abstract public class SwipeCardReader implements Runnable{
     private void monitorReading(RemoteSpace ts) {
         try {
             Object[] request = ts.get(new ActualField(readerName), new FormalField(String.class));
-            ts.put(buildingName, doorName, Door.CROSSING_REQUEST, direction, request[1]);
+            ts.put(buildingName, doorName, CrossingManager.CROSSING_REQUEST, direction, request[1]);
         } catch (InterruptedException e) {
             System.out.println(readerName + " : erreur while communicating with the tuple space");
             e.printStackTrace();
