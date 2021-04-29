@@ -1,13 +1,19 @@
 package com.INFO801.TP_INFO801.application.model;
 
-import java.util.ArrayList;
+import org.jspace.ActualField;
+import org.jspace.RemoteSpace;
 
-public class Building{
+import java.util.Observable;
+
+public class Building extends Observable{
     public String id;
+    // TODO : à décommenter
+    //private final RemoteSpace server;
     public Door[] doors;
 
     public Building(int id, int nbDoors){
         this.id = "Building"+ id;
+        // TODO : initialiser server avec methode de connexion
         this.doors = new Door[nbDoors];
         generateDoors(nbDoors);
     }
@@ -23,4 +29,21 @@ public class Building{
             new Thread(doors[i]).start();
         }
     }
+
+    /* TODO : à décommenter
+    public void notifyStartedFire(){
+        try {
+            server.put(new ActualField(id), new ActualField("Fire"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void notifyStoppedFire(){
+        try {
+            server.put(new ActualField(id), new ActualField("FireEnd"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }*/
 }
