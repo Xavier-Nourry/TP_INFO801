@@ -15,8 +15,7 @@ public class TestClient {
             reg = LocateRegistry.getRegistry(Server.HOST,Server.PORT);
             PassServer server = (PassServer) reg.lookup("PassServer");
             server.enter("LAUZIERES","2");
-            server.triggerAlarm("LAUZIERES");
-
+            server.shutOffAlarm("LABOS");
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
         }

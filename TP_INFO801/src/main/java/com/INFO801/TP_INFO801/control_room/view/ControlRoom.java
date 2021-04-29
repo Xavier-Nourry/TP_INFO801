@@ -26,9 +26,11 @@ public class ControlRoom extends JFrame{
         Container pane = getContentPane();
         setLayout(new BoxLayout(pane, BoxLayout.LINE_AXIS));
         pane.add(passPanel());
-        // TODO separator
+        pane.add(new JSeparator(SwingConstants.VERTICAL));
+        pane.add(new JSeparator(SwingConstants.VERTICAL));
         pane.add(buildingPanel());
-        // TODO separator
+        pane.add(new JSeparator(SwingConstants.VERTICAL));
+        pane.add(new JSeparator(SwingConstants.VERTICAL));
         pane.add(logPanel());
 
         pack();
@@ -78,6 +80,7 @@ public class ControlRoom extends JFrame{
         manager.add(Box.createRigidArea(new Dimension(0, 5)));
         manager.add(acceptButton);
 
+        panel.add(new JLabel("Badges"), BorderLayout.PAGE_START);
         panel.add(list, BorderLayout.CENTER);
         panel.add(manager, BorderLayout.PAGE_END);
 
@@ -94,6 +97,7 @@ public class ControlRoom extends JFrame{
         JPanel buildingList = buildingListPanel();
         JPanel userListPanel = userListPanel();
 
+        userListParentPanel.add(new JLabel("Bâtiments"), BorderLayout.PAGE_START);
         userListParentPanel.add(buildingList, BorderLayout.LINE_START);
         userListParentPanel.add(userListPanel, BorderLayout.CENTER);
 
@@ -131,6 +135,7 @@ public class ControlRoom extends JFrame{
 
     private JPanel logPanel(){
         JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
 
         LogListModel listModel = new LogListModel(model.getLogsAsString());
         // subscribe the model to a property listener in the model
@@ -140,7 +145,9 @@ public class ControlRoom extends JFrame{
         model.addPropertyChangeListener(new LogsChangedListener(listModel));
 
         list.setLayoutOrientation(JList.VERTICAL);
-        panel.add(list);
+
+        panel.add(new JLabel("Journal de bord"), BorderLayout.PAGE_START);
+        panel.add(list, BorderLayout.CENTER);
 
         return panel;
     }
