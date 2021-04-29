@@ -24,7 +24,9 @@ public class LockManager implements Runnable {
     @Override
     public void run() {
         // On lance le processus de minuterie pour le verrouillage automatique
-        new Thread(new LockTimer(doorID)).start();
+        LockTimer lockTimer = new LockTimer(doorID);
+        lockTimer.setInitialState();
+        new Thread(lockTimer).start();
 
         // On lance le processus de badgeuse extérieure
         extSCR = new ExternalSwipeCardReader(buildingID, doorID);

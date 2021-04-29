@@ -26,11 +26,10 @@ public class LockTimer implements Runnable {
 
     @Override
     public void run() {
-        setInitialState();
         monitor();
     }
 
-    private void setInitialState() {
+    public void setInitialState() {
         try { // Au départ, le compteur du timer est à 0
             ts.put(timerID, 0);
         } catch (InterruptedException e) {
@@ -49,44 +48,43 @@ public class LockTimer implements Runnable {
     }
 
     private void monitorTimer() throws InterruptedException {
-            Object[] activation = ts.get(
-                    new ActualField(doorID),
-                    new ActualField(ACTIVATION),
-                    new FormalField(String.class));
-            String swipeCardId = (String) activation[2];
+        Object[] activation = ts.get(
+                new ActualField(doorID),
+                new ActualField(ACTIVATION),
+                new FormalField(String.class));
+        String swipeCardId = (String) activation[2];
 
-            // Appel récursif pour le prochain timer
-            new Thread(new LockTimer(this)).start();
+        // Appel récursif pour le prochain timer
+        new Thread(new LockTimer(this)).start();
 
-            Object[] timerCounter = ts.get(
-                    new ActualField(timerID),
-                    new FormalField(Integer.class));
-            Integer counter = (Integer) timerCounter[1];
+        Object[] timerCounter = ts.get(
+                new ActualField(timerID),
+                new FormalField(Integer.class));
+        Integer counter = (Integer) timerCounter[1];
+        // On incrémente le compteur de timers actif pour la porte
+        ts.put(timerID, counter+1);
 
-            // On incrémente le compteur de timers actif pour la porte
-            ts.put(timerID, counter+1);
+        Thread.sleep(30000);
 
-            Thread.sleep(30000);
-
-            Object[] AuthorizedCrosser = ts.getp(
+        Object[] AuthorizedCrosser = ts.getp(
                     new ActualField(doorID),
                     new ActualField(AuthorizationManager.AUTHORIZED_CROSSER),
                     new FormalField(String.class),
                     new ActualField(swipeCardId));
 
-            if (AuthorizedCrosser != null){
-                // S'il reste quelqu'un d'autorisé à passer, on vérifie qu'il y a encore des timers en cours
-                // Si non il faut reverrouiller par sécurité
-                timerCounter = ts.get(
-                        new ActualField(timerID),
-                        new FormalField(Integer.class));
-                counter = (Integer) timerCounter[1];
+        if (AuthorizedCrosser != null){
+            // S'il reste quelqu'un d'autorisé à passer, on vérifie qu'il y a encore des timers en cours
+            // Si non il faut reverrouiller par sécurité
+            timerCounter = ts.get(
+                    new ActualField(timerID),
+                    new FormalField(Integer.class));
+            counter = (Integer) timerCounter[1];
 
-                int updatedCounter = counter - 1;
-                ts.put(timerID, updatedCounter);
-                if (updatedCounter > 0){
-                    ts.put(doorID, Door.LOCKING, Boolean.TRUE);
-                }
+            int updatedCounter = counter - 1;
+            ts.put(timerID, updatedCounter);
+            if (updatedCounter == 0){
+                ts.put(doorID, Door.LOCKING, Boolean.TRUE);
             }
+        }
     }
 }

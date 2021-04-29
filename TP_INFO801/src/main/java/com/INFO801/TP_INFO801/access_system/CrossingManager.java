@@ -60,33 +60,41 @@ public class CrossingManager implements Runnable {
         ts.get(new ActualField(doorID),
                 new ActualField(CROSSING));
 
-        Object[] crosser = ts.getp(
-                new ActualField(doorID),
-                new ActualField(AuthorizationManager.AUTHORIZED_CROSSER),
-                new FormalField(String.class),
-                new FormalField(String.class));
+        Object[] blockedLockingAction = ts.queryp(
+                new ActualField(buildingID),
+                new ActualField(Building.DOOR_RELEASE)
+        );
+        boolean lockingAuthorization = blockedLockingAction == null;
 
-        if (crosser != null) { // Personne autorisée à entrer
-            String direction = (String) crosser[2];
-            String swipeCardId = (String) crosser[3];
-            if (direction.equals(IN_DIRECTION))
-                dbManager.enter(buildingID, swipeCardId);
-            else
-                dbManager.exit(buildingID, swipeCardId);
+        if (lockingAuthorization) {
+            Object[] crosser = ts.getp(
+                    new ActualField(doorID),
+                    new ActualField(AuthorizationManager.AUTHORIZED_CROSSER),
+                    new FormalField(String.class),
+                    new FormalField(String.class));
 
-        } else // Personne non autorisée à entrer
-            ts.put(doorID, UNAUTHORIZED_CROSSING);
+            if (crosser != null) { // Personne autorisée à entrer
+                String direction = (String) crosser[2];
+                String swipeCardId = (String) crosser[3];
+                if (direction.equals(IN_DIRECTION))
+                    dbManager.enter(buildingID, swipeCardId);
+                else
+                    dbManager.exit(buildingID, swipeCardId);
 
-        // On regarde si quelqu'un d'autre est actuellement autorisé à passer
-        Object[] crosser2 = ts.queryp(
-                new ActualField(doorID),
-                new ActualField(AuthorizationManager.AUTHORIZED_CROSSER),
-                new FormalField(String.class),
-                new FormalField(String.class));
+                // On regarde si quelqu'un d'autre est actuellement autorisé à passer
+                Object[] crosser2 = ts.queryp(
+                        new ActualField(doorID),
+                        new ActualField(AuthorizationManager.AUTHORIZED_CROSSER),
+                        new FormalField(String.class),
+                        new FormalField(String.class));
 
-        // Si personne d'autre n'a eu l'autorisation de passer en même temps,
-        // on reverrouille la porte après le passage de la personne précédente
-        if (crosser2 == null)
-            ts.put(doorID, Door.LOCKING, Boolean.TRUE);
+                // Si personne d'autre n'a eu l'autorisation de passer en même temps,
+                // on reverrouille la porte après le passage de la personne précédente
+                if (crosser2 == null)
+                    ts.put(doorID, Door.LOCKING, Boolean.TRUE);
+
+            } else // Personne non autorisée à entrer
+                ts.put(doorID, UNAUTHORIZED_CROSSING);
+        }
     }
 }
