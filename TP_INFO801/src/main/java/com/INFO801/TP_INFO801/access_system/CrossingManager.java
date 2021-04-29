@@ -10,7 +10,7 @@ import java.rmi.RemoteException;
 public class CrossingManager implements Runnable {
     public static final String CROSSING = "Crossing";
     public static final String CROSSING_REQUEST = "CrossingRequest";
-    private static final String UNAUTHORIZED_CROSSING = "UnauthorizedCrossing";
+    public static final String UNAUTHORIZED_CROSSING = "UnauthorizedCrossing";
     public final static String OUT_DIRECTION = "Out";
     public final static String IN_DIRECTION = "In";
 
@@ -75,7 +75,7 @@ public class CrossingManager implements Runnable {
                 dbManager.exit(buildingID, swipeCardId);
 
         } else // Personne non autorisée à entrer
-            ts.put(buildingID, UNAUTHORIZED_CROSSING);
+            ts.put(doorID, UNAUTHORIZED_CROSSING);
 
         // On regarde si quelqu'un d'autre est actuellement autorisé à passer
         Object[] crosser2 = ts.queryp(

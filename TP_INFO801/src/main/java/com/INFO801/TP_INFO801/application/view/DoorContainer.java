@@ -51,6 +51,7 @@ public class DoorContainer extends JPanel implements UIComponent, Observer {
     private void notAllowedCrossingDetection() {
         if(this.door.notAllowedCross){
             JOptionPane.showMessageDialog(getParent(), Constants.NOT_ALLOWED_CROSSING + this.door.id);
+            this.door.notAllowedCross = false;
         }
     }
 

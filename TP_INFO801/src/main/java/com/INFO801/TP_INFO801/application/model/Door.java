@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.Observable;
 
 import static com.INFO801.TP_INFO801.access_system.Door.LOCKED;
+import static com.INFO801.TP_INFO801.access_system.LaserSensor.DETECTED_CROSSING;
 import static java.lang.System.exit;
 
 public class Door extends Observable implements Agent, Runnable{
@@ -19,7 +20,7 @@ public class Door extends Observable implements Agent, Runnable{
     public final OutsideRedLightIndicator orli; // Outside
     public String id;
     public Boolean open;
-    public Boolean notAllowedCross;
+    public boolean notAllowedCross;
 
     public Door(String buildingID, int id){
         this.id = buildingID + " - Door" + id;
@@ -29,7 +30,7 @@ public class Door extends Observable implements Agent, Runnable{
         this.ogli = new OutsideGreenLightIndicator(this.id);
         this.orli = new OutsideRedLightIndicator(this.id);
         this.open = Boolean.FALSE;
-        this.notAllowedCross = Boolean.FALSE;
+        this.notAllowedCross = false;
     }
 
     @Override
@@ -39,7 +40,7 @@ public class Door extends Observable implements Agent, Runnable{
         new Thread(irli).start();
         new Thread(ogli).start();
         new Thread(orli).start();
-        new Thread(new NotAllowedCrossingManager(this, this.server));
+        new Thread(new NotAllowedCrossingManager(this, this.server)).start();
 
         // Traitement
         while(true){
@@ -82,7 +83,7 @@ public class Door extends Observable implements Agent, Runnable{
     // A appeler depuis l'UI pour passer une porte
     public void crossing(){
         try {
-            server.put(id + " - Laser");
+            server.put(id + " - Laser", DETECTED_CROSSING);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -106,7 +107,7 @@ public class Door extends Observable implements Agent, Runnable{
         }
     }
 
-    public void setNotAllowedCross(Boolean aBoolean) {
+    public void setNotAllowedCross(boolean aBoolean) {
         this.notAllowedCross = aBoolean;
         setChanged();
         notifyObservers();

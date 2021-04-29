@@ -4,7 +4,7 @@ import org.jspace.ActualField;
 import org.jspace.RemoteSpace;
 
 public class LaserSensor implements Runnable {
-    private static final String DETECTED_CROSSING = "detectedCrossing";
+    public static final String DETECTED_CROSSING = "detectedCrossing";
     private final String doorID;
     private final String sensorID;
     private final RemoteSpace ts;
