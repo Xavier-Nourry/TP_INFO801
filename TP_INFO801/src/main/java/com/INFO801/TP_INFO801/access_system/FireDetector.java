@@ -6,27 +6,40 @@ import org.jspace.RemoteSpace;
 public class FireDetector implements Runnable {
     public static final String FIRE = "Fire";
     public static final String FIRE_DETECTED = "FireDetected";
-    private final String buildingName;
 
-    public FireDetector(String buildingName) {
-        this.buildingName = buildingName;
+    private final String buildingID;
+    private final String detectorID;
+
+    private final RemoteSpace ts;
+
+
+    public FireDetector(String buildingID) {
+        this.buildingID = buildingID;
+        this.detectorID = buildingID + " - FireDetector";
+
+        // Connexion à l'espace de tuple
+        ts = TupleSpace.remoteSpaceConnexion(detectorID);
     }
 
     @Override
     public void run() {
-        RemoteSpace ts = TupleSpace.remoteSpaceConnexion(buildingName);
-        assert ts != null;
-        while (true){
-            this.monitorDetection(ts);
-        }
+        monitor();
     }
 
-    private void monitorDetection(RemoteSpace ts) {
+    private void monitor() {
         try {
-            ts.get(new ActualField(buildingName), new ActualField(FIRE));
-            ts.put(buildingName, FIRE_DETECTED);
+            monitorDetection();
         } catch (InterruptedException e) {
+            System.out.println(detectorID + " : error while communicating with the tuple space");
             e.printStackTrace();
+            return;
         }
+
+        monitor(); // S'appelle récursivement
+    }
+
+    private void monitorDetection() throws InterruptedException {
+        ts.get(new ActualField(buildingID), new ActualField(FIRE));
+        ts.put(buildingID, FIRE_DETECTED);
     }
 }
