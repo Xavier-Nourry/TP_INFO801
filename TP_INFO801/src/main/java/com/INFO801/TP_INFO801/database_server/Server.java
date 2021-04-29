@@ -36,6 +36,7 @@ public class Server implements PassServer {
             PassServer stub = (PassServer) UnicastRemoteObject.exportObject(serv, 0);
             Registry reg = LocateRegistry.createRegistry(PORT);
             reg.bind("PassServer", stub);
+            System.out.println("Serveur démarré avec succès");
         } catch (Exception e){
             e.printStackTrace();
         }
