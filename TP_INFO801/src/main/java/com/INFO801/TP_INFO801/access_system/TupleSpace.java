@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 
 public class TupleSpace {
     private final static String SERVER_URI = "tcp://127.0.0.1:9002/?keep";
-    protected final static String CLIENT_URI = "tcp://127.0.0.1:9002/ts?keep";
+    public final static String CLIENT_URI = "tcp://127.0.0.1:9002/ts?keep";
 
     public static void main(String[] args) {
         // On crée l'espace de tuples

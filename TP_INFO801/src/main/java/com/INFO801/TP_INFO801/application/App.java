@@ -6,7 +6,7 @@ import com.INFO801.TP_INFO801.application.view.MainFrame;
 public class App {
 
     public static void main(String[] argv){
-        new MainFrame(new Infrastructure(2, 2));
+        new MainFrame(new Infrastructure());
     }
 
 }

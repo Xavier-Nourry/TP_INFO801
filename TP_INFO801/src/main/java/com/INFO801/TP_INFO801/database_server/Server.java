@@ -8,8 +8,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.Date;
 
-import static java.util.stream.Collectors.toList;
-
 public class Server implements PassServer {
 
     public static final String HOST = "127.0.0.1";
@@ -26,8 +24,6 @@ public class Server implements PassServer {
         manager.createBuilding("LAUZIERES", 2);
         manager.createPass("1","Jean","Valjean",new String[]{"LAUZIERES"});
         manager.createPass("2","Julien","Sorel",new String[]{"LABOS","LAUZIERES"});
-        manager.notifyEntrance("LABOS","1");
-        manager.triggerAlarm("LABOS");
     }
 
     public static void main(String[] args){

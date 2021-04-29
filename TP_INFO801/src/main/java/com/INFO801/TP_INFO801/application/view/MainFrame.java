@@ -5,11 +5,13 @@ import com.INFO801.TP_INFO801.application.model.Infrastructure;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 public class MainFrame extends JFrame implements UIComponent{
-    private Infrastructure infra;
-    private JPanel mainPanel;
+    private final Infrastructure infra;
+    private final JPanel mainPanel;
 
     public MainFrame(Infrastructure infra) {
         super("TP INFO801");
@@ -24,7 +26,7 @@ public class MainFrame extends JFrame implements UIComponent{
         addWindowListener(l);
 
         this.mainPanel = new JPanel();
-        this.mainPanel.setLayout(new GridLayout(this.infra.buildings.length, 1)); // Calé à gauche
+        this.mainPanel.setLayout(new GridLayout(this.infra.buildings.size(), 1)); // Calé à gauche
         fillUIFromModel();
 
         this.infra.runAll(); // Lancement de tous les threads de l'infra

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class Building implements Runnable {
     protected static final String ALL_DOORS_LOCKED = "allDoorsLocked";
     protected static final String DOOR_RELEASE = "DoorRelease";
+    public static final String BUILDING_CREATION = "BuildingCreation";
 
     private final String buildingID;
     private final ArrayList<Door> doors;
@@ -23,6 +24,15 @@ public class Building implements Runnable {
 
         // Connexion à l'espace de tuple
         ts = remoteConnections.remoteSpaceConnexion(buildingID);
+
+        // Le building préviens de sa création pour permettre à l'application de se synchroniser
+        try {
+            ts.put(BUILDING_CREATION, buildingID, doors.size());
+        } catch (InterruptedException e) {
+            System.out.println(buildingID + " : error while communicating with the tuple space");
+            e.printStackTrace();
+        }
+
     }
 
     @Override
