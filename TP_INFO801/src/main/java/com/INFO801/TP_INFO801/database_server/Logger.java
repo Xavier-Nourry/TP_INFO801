@@ -19,11 +19,11 @@ public class Logger {
     }
 
     public void logFireAlarm(Building b, Date d) {
-        logs.add(new LogEntry("FIRE_ON", b.id ,d));
+        logs.add(new LogEntry("FIRE_ON", b.id, d));
     }
 
     public void logStopFireAlarm(Building b, Date d) {
-        logs.add(new LogEntry("FIRE_OFF", b.id ,d));
+        logs.add(new LogEntry("FIRE_OFF", b.id, d));
     }
 
     @Override

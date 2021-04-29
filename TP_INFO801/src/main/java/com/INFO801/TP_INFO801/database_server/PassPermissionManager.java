@@ -85,6 +85,7 @@ public class PassPermissionManager {
         Building b = getBuilding(buildingId);
         if(b!=null){
             b.isOnAlarm = false;
+            peopleCurrentlyIn.get(b).clear();
             logs.logStopFireAlarm(b, new Date(System.currentTimeMillis()));
         }
     }

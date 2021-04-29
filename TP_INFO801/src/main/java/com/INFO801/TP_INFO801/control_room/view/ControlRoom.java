@@ -3,17 +3,17 @@ import com.INFO801.TP_INFO801.control_room.controller.BuildingSelectedListener;
 import com.INFO801.TP_INFO801.control_room.controller.CreatePassListener;
 import com.INFO801.TP_INFO801.control_room.controller.DeletePassListener;
 import com.INFO801.TP_INFO801.control_room.model.PassManagerClient;
-import com.INFO801.TP_INFO801.database_server.Building;
 import com.INFO801.TP_INFO801.database_server.Pass;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 public class ControlRoom extends JFrame{
-    private final PassManagerClient model;
+    private PassManagerClient model;
     private PassListModel userListModel;
+    private JList<BuildingInfo> buildingList;
 
     public static void main(String[] args) {
         JFrame frame = new ControlRoom();
@@ -23,19 +23,26 @@ public class ControlRoom extends JFrame{
         super("INFO801 - Salle de contrôle");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        model = new PassManagerClient();
+        try {
+            model = new PassManagerClient();
+            System.out.println("Connecté au serveur avec succès.");
 
-        Container pane = getContentPane();
-        setLayout(new BoxLayout(pane, BoxLayout.LINE_AXIS));
-        pane.add(passPanel());
-        // TODO separator
-        pane.add(buildingPanel());
-        // TODO separator
-        pane.add(logPanel());
+            Container pane = getContentPane();
+            setLayout(new BoxLayout(pane, BoxLayout.LINE_AXIS));
+            pane.add(passPanel());
+            pane.add(new JSeparator(SwingConstants.VERTICAL));
+            pane.add(new JSeparator(SwingConstants.VERTICAL));
+            pane.add(buildingPanel());
+            pane.add(new JSeparator(SwingConstants.VERTICAL));
+            pane.add(new JSeparator(SwingConstants.VERTICAL));
+            pane.add(logPanel());
 
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
+            pack();
+            setLocationRelativeTo(null);
+            setVisible(true);
+        } catch (RemoteException | NotBoundException e) {
+            System.out.println("Impossible de se connecter au serveur.");
+        }
     }
 
     private JPanel passPanel(){
@@ -80,6 +87,7 @@ public class ControlRoom extends JFrame{
         manager.add(Box.createRigidArea(new Dimension(0, 5)));
         manager.add(acceptButton);
 
+        panel.add(new JLabel("Badges"), BorderLayout.PAGE_START);
         panel.add(list, BorderLayout.CENTER);
         panel.add(manager, BorderLayout.PAGE_END);
 
@@ -96,6 +104,7 @@ public class ControlRoom extends JFrame{
         JPanel buildingList = buildingListPanel();
         JPanel userListPanel = userListPanel();
 
+        userListParentPanel.add(new JLabel("Bâtiments"), BorderLayout.PAGE_START);
         userListParentPanel.add(buildingList, BorderLayout.LINE_START);
         userListParentPanel.add(userListPanel, BorderLayout.CENTER);
 
@@ -112,20 +121,20 @@ public class ControlRoom extends JFrame{
         // subscribe the model to a property listener in the model
         model.addPropertyChangeListener(new BuildingPropertyListener(listModel));
 
-        JList<BuildingInfo> list = new JList<>(listModel);
-        list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        list.setLayoutOrientation(JList.VERTICAL);
+        buildingList = new JList<>(listModel);
+        buildingList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        buildingList.setLayoutOrientation(JList.VERTICAL);
 
-        list.addListSelectionListener(new BuildingSelectedListener(model, userListModel, list));
+        buildingList.addListSelectionListener(new BuildingSelectedListener(model, userListModel, buildingList));
 
-        buildingListPanel.add(list);
+        buildingListPanel.add(buildingList);
         return buildingListPanel;
     }
 
     private JPanel userListPanel(){
         JPanel userListPanel = new JPanel();
         JList<PassInfo> userList = new JList<>(userListModel);
-        model.addPropertyChangeListener(new BuildingUserListChangedListener(userListModel));
+        model.addPropertyChangeListener(new BuildingUserListChangedListener(model,userListModel, buildingList));
         userList.setLayoutOrientation(JList.VERTICAL);
         userListPanel.add(userList);
         return userListPanel;
@@ -133,13 +142,19 @@ public class ControlRoom extends JFrame{
 
     private JPanel logPanel(){
         JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
 
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        listModel.addAll(model.getLogsAsString());
+        LogListModel listModel = new LogListModel(model.getLogsAsString());
+        // subscribe the model to a property listener in the model
+
         // property change listener
         JList<String> list = new JList<>(listModel);
+        model.addPropertyChangeListener(new LogsChangedListener(listModel));
+
         list.setLayoutOrientation(JList.VERTICAL);
-        panel.add(list);
+
+        panel.add(new JLabel("Journal de bord"), BorderLayout.PAGE_START);
+        panel.add(list, BorderLayout.CENTER);
 
         return panel;
     }

@@ -13,7 +13,7 @@ public class BuildingListModel extends AbstractListModel<BuildingInfo> {
 
     private void setModel(Building[] data){
         this.model = data;
-        Arrays.sort(model, Comparator.comparing(o -> o.id));
+        Arrays.sort(model, Comparator.comparing((Building b) -> !b.isOnAlarm).thenComparing((Building b) -> b.id));
     }
 
     public BuildingListModel(Building[] data) {
