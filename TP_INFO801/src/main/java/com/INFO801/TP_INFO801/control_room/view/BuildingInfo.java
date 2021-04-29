@@ -15,6 +15,6 @@ public class BuildingInfo {
 
     @Override
     public String toString() {
-        return "["+" "+"] "+data.id;
+        return "["+(data.isOnAlarm?"x":" ")+"] "+data.id;
     }
 }

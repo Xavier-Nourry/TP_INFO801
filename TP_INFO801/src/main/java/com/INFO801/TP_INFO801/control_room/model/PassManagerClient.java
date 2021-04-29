@@ -61,7 +61,7 @@ public class PassManagerClient {
                     break;
                 case "FIRE_ON":
                 case "FIRE_OFF":
-                    //changes.firePropertyChange("buildings", null, server.getBuildings());
+                    changes.firePropertyChange("buildings", null, server.getBuildings());
                     break;
                 default:
                     break;
