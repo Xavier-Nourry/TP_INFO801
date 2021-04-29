@@ -39,12 +39,12 @@ public class Door extends Observable implements Agent, Runnable{
         new Thread(irli).start();
         new Thread(ogli).start();
         new Thread(orli).start();
+        new Thread(new NotAllowedCrossingManager(this, this.server));
 
         // Traitement
         while(true){
             try {
                 manageState();
-                notAllowedCrossingDetection();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -106,13 +106,9 @@ public class Door extends Observable implements Agent, Runnable{
         }
     }
 
-    public void notAllowedCrossingDetection() throws InterruptedException {
-        Object[] response;
-        response = server.get(new ActualField(id), new ActualField("UnauthorizedCrossing"), new FormalField(Boolean.class));
-        if(response != null){
-            notAllowedCross = (Boolean) response[1];
-            setChanged();
-            notifyObservers();
-        }
+    public void setNotAllowedCross(Boolean aBoolean) {
+        this.notAllowedCross = aBoolean;
+        setChanged();
+        notifyObservers();
     }
 }
