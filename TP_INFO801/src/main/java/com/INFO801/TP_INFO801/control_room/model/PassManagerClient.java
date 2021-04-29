@@ -4,6 +4,7 @@ import com.INFO801.TP_INFO801.database_server.*;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -18,27 +19,22 @@ public class PassManagerClient {
     private PassServer server;
     private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
-    public PassManagerClient(){
-        try{
-            Registry reg = LocateRegistry.getRegistry(Server.HOST,Server.PORT);
-            server = (PassServer) reg.lookup("PassServer");
-            lastCheckTime = new Date(System.currentTimeMillis());
+    public PassManagerClient() throws RemoteException, NotBoundException {
+        Registry reg = LocateRegistry.getRegistry(Server.HOST,Server.PORT);
+        server = (PassServer) reg.lookup("PassServer");
+        lastCheckTime = new Date(System.currentTimeMillis());
 
-            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-            scheduler.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        checkUpdates();
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    checkUpdates();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
-            }, 0, 1, TimeUnit.SECONDS);
-
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+            }
+        }, 0, 1, TimeUnit.SECONDS);
     }
 
     private void checkUpdates() throws RemoteException {

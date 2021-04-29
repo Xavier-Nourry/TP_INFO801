@@ -7,9 +7,11 @@ import com.INFO801.TP_INFO801.database_server.Pass;
 
 import javax.swing.*;
 import java.awt.*;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 public class ControlRoom extends JFrame{
-    private final PassManagerClient model;
+    private PassManagerClient model;
     private PassListModel userListModel;
     private JList<BuildingInfo> buildingList;
 
@@ -21,21 +23,26 @@ public class ControlRoom extends JFrame{
         super("INFO801 - Salle de contrôle");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        model = new PassManagerClient();
+        try {
+            model = new PassManagerClient();
+            System.out.println("Connecté au serveur avec succès.");
 
-        Container pane = getContentPane();
-        setLayout(new BoxLayout(pane, BoxLayout.LINE_AXIS));
-        pane.add(passPanel());
-        pane.add(new JSeparator(SwingConstants.VERTICAL));
-        pane.add(new JSeparator(SwingConstants.VERTICAL));
-        pane.add(buildingPanel());
-        pane.add(new JSeparator(SwingConstants.VERTICAL));
-        pane.add(new JSeparator(SwingConstants.VERTICAL));
-        pane.add(logPanel());
+            Container pane = getContentPane();
+            setLayout(new BoxLayout(pane, BoxLayout.LINE_AXIS));
+            pane.add(passPanel());
+            pane.add(new JSeparator(SwingConstants.VERTICAL));
+            pane.add(new JSeparator(SwingConstants.VERTICAL));
+            pane.add(buildingPanel());
+            pane.add(new JSeparator(SwingConstants.VERTICAL));
+            pane.add(new JSeparator(SwingConstants.VERTICAL));
+            pane.add(logPanel());
 
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
+            pack();
+            setLocationRelativeTo(null);
+            setVisible(true);
+        } catch (RemoteException | NotBoundException e) {
+            System.out.println("Impossible de se connecter au serveur.");
+        }
     }
 
     private JPanel passPanel(){
