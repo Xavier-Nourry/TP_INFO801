@@ -20,11 +20,14 @@ public class Door implements Runnable {
         ts = TupleSpace.remoteSpaceConnexion(doorID);
     }
 
+    public String getId() {
+        return doorID;
+    }
+
     @Override
     public void run() {
         // On lance le processus de gestion de passage
-        CrossingManager crossingManager = new CrossingManager(buildingID, doorID);
-        new Thread(crossingManager).start();
+        new Thread(new CrossingManager(buildingID, doorID)).start();
 
         setInitialState();
 
@@ -34,9 +37,9 @@ public class Door implements Runnable {
     private void setInitialState() {
         // Etat initial: la porte est verrouillée
         try {
-            ts.put(this.doorID, true);
+            ts.put(this.doorID, LOCKED, true);
         } catch (InterruptedException e) {
-            System.out.println(doorID + " : erreur while communicating with the tuple space");
+            System.out.println(doorID + " : error while communicating with the tuple space");
             e.printStackTrace();
         }
     }
@@ -48,9 +51,10 @@ public class Door implements Runnable {
             System.out.println(doorID + " : erreur while communicating with the tuple space");
             e.printStackTrace();
         }
-        monitor();
+        monitor(); // S'appelle récursivement
     }
 
+    // Gère le verrouillage/déverrouillage de la porte
     private void monitorLocking() throws InterruptedException {
         Object[] lockingAction = ts.get(
                 new ActualField(doorID),
@@ -68,9 +72,5 @@ public class Door implements Runnable {
         // On peut changer le statut de la porte si on cherche à déverrouiller, ou si on a le droit de verrouiller
         if (!mustLocked || lockingAuthorization)
                 ts.put(doorID, LOCKED , mustLocked);
-    }
-
-    public String getId() {
-        return doorID;
     }
 }

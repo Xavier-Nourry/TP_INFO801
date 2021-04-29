@@ -35,8 +35,7 @@ public class Building implements Runnable {
         new Thread(new FireManager(buildingID)).start();
 
         // On lance le processus de gestion des autorisations
-        AuthorizationManager authorizationsManager = new AuthorizationManager(buildingID);
-        new Thread(authorizationsManager).start();
+        new Thread(new AuthorizationManager(buildingID)).start();
 
         monitor();
     }
