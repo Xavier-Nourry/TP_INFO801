@@ -1,29 +1,65 @@
 package com.INFO801.TP_INFO801.application.view;
 
+import com.INFO801.TP_INFO801.application.controller.CrossDoorListener;
 import com.INFO801.TP_INFO801.application.model.Door;
 import com.INFO801.TP_INFO801.application.model.LightIndicator;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Observable;
+import java.util.Observer;
 
-public class DoorContainer extends JPanel implements UIComponent{
+public class DoorContainer extends JPanel implements UIComponent, Observer {
     private final Door door;
+    private JLabel id;
+    private JLabel state;
+    private EntryLightsContainer entryLightsContainer;
+    private ExitLightsContainer exitLightsContainer;
+    private PassMenuContainer passMenuContainer;
+    private JButton crossDoor;
 
     public DoorContainer(Door door){
         this.door = door;
-        this.setLayout(new GridLayout(1, 5));
+        this.door.addObserver(this);
+        this.setLayout(new GridLayout(1, 6));
         fillUIFromModel();
     }
 
     public void fillUIFromModel() {
-        JLabel doorID = new JLabel(this.door.id);
-        JLabel doorState = new JLabel(String.valueOf((this.door.open)));
-        doorState.setForeground(Color.RED);
-        //PassMenu passMenu = new PassMenu(door);
-        this.add(doorID);
-        this.add(doorState);
-        /*this.add(entryLights);
-        this.add(exitLights);*/
-        //this.add(passMenu);
+        this.id = new JLabel(this.door.id);
+
+        this.state = new JLabel(Constants.CLOSED);
+        this.state.setForeground(Constants.CLOSED_COLOR);
+
+        this.entryLightsContainer = new EntryLightsContainer(this.door.ogli, this.door.orli);
+        this.exitLightsContainer = new ExitLightsContainer(this.door.igli, this.door.irli);
+
+        this.passMenuContainer = new PassMenuContainer(this.door);
+
+        this.crossDoor = new JButton(Constants.CROSS_DOOR);
+        this.crossDoor.addActionListener(new CrossDoorListener(this.door));
+
+        this.add(this.id);
+        this.add(this.state);
+        this.add(this.entryLightsContainer);
+        this.add(this.exitLightsContainer);
+        this.add(this.passMenuContainer);
+        this.add(this.crossDoor);
+    }
+
+
+    @Override
+    public void update(Observable o, Object arg) {
+        manageState();
+    }
+
+    private void manageState(){
+        if(this.door.open){
+            this.state.setText(Constants.OPEN);
+            this.state.setForeground(Constants.OPEN_COLOR);
+        }else{
+            this.state.setText(Constants.CLOSED);
+            this.state.setForeground(Constants.CLOSED_COLOR);
+        }
     }
 }

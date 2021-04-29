@@ -12,27 +12,22 @@ public class BuildingContainer extends JPanel implements UIComponent{
     public BuildingContainer(Building buidling){
         this.building = buidling;
         this.setLayout(new GridLayout(3, 1));
-        // TODO : voir quel layout utiliser
         fillUIFromModel();
     }
 
     @Override
     public void fillUIFromModel() {
         this.add(new JLabel(this.building.id));
-        this.add(setListLegend());
-        JPanel doorsPanel = new JPanel(new GridLayout(this.building.doors.length, 5));
+        //this.add(setListLegend());
+        JPanel doorsPanel = new JPanel(new GridLayout(this.building.doors.length, 1));
         for(Door door : this.building.doors){
-            doorsPanel.add(new JLabel(door.id));
-            doorsPanel.add(new JLabel(String.valueOf(door.open)));
-            doorsPanel.add(new JLabel("Badgeuse entrée"));
-            doorsPanel.add(new JLabel("Badgeuse sorite"));
-            doorsPanel.add(new JLabel("Badger"));
+            doorsPanel.add(new DoorContainer(door));
         }
         this.add(doorsPanel);
         // TODO : gérer les alarmes
     }
 
-    private JPanel setListLegend(){
+    /*private JPanel setListLegend(){
         JPanel res = new JPanel(new GridLayout(1, 5));
         JLabel door = new JLabel("Porte");
         JLabel state = new JLabel("Etat");
@@ -45,5 +40,5 @@ public class BuildingContainer extends JPanel implements UIComponent{
         res.add(exitBadger);
         res.add(passMenu);
         return res;
-    }
+    }*/
 }

@@ -73,7 +73,7 @@ public class Door extends Observable implements Agent, Runnable{
     }
 
     // A appeler depuis l'UI pour passer une porte
-    private void crossing(){
+    public void crossing(){
         try {
             server.put(new ActualField(id + " - Laser"));
         } catch (InterruptedException e) {
@@ -82,7 +82,7 @@ public class Door extends Observable implements Agent, Runnable{
     }
 
     // A appeler depuis l'UI pour badger depuis l'intérieur
-    private void badgingFromInside(String passID){
+    public void badgingFromInside(String passID){
         try {
             server.put(new ActualField(id + " - Internal Reader"), new ActualField(passID));
         } catch (InterruptedException e) {
@@ -91,7 +91,7 @@ public class Door extends Observable implements Agent, Runnable{
     }
 
     // A appeler depuis l'UI pour badger de l'extérieur
-    private void badgingFromOutside(String passID){
+    public void badgingFromOutside(String passID){
         try {
             server.put(new ActualField(id + " - External Reader"), new ActualField(passID));
         } catch (InterruptedException e) {

@@ -13,7 +13,7 @@ import static java.lang.System.exit;
 public class InsideRedLightIndicator extends Observable implements Agent, Runnable, LightIndicator{
     private final String id;
     private final RemoteSpace server;
-    private boolean on;
+    public boolean on;
     private Color color;
 
     public InsideRedLightIndicator(String id){
