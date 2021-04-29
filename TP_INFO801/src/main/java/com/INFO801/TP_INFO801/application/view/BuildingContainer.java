@@ -21,7 +21,7 @@ public class BuildingContainer extends JPanel implements UIComponent{
         this.add(new JLabel(this.building.id));
         JPanel firePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton fireButton = new JButton(Constants.START_FIRE);
-        fireButton.addActionListener(new StartFireListener(fireButton)); // TODO : ajouter building en argument
+        fireButton.addActionListener(new StartFireListener(fireButton, building));
         firePanel.add(fireButton);
         this.add(firePanel);
         JPanel doorsPanel = new JPanel(new GridLayout(this.building.doors.length, 1));

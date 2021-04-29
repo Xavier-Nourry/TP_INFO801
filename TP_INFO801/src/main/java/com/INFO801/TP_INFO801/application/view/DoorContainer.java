@@ -31,8 +31,7 @@ public class DoorContainer extends JPanel implements UIComponent, Observer {
         PassMenuContainer passMenuContainer = new PassMenuContainer(this.door);
 
         JButton crossDoor = new JButton(Constants.CROSS_DOOR);
-        // TODO : supprimer second paramètre de CrossDoorListener
-        crossDoor.addActionListener(new CrossDoorListener(this.door, crossDoor));
+        crossDoor.addActionListener(new CrossDoorListener(this.door));
 
         this.add(id);
         this.add(this.state);

@@ -8,6 +8,7 @@ import org.jspace.RemoteSpace;
 import java.io.IOException;
 import java.util.Observable;
 
+import static com.INFO801.TP_INFO801.access_system.Door.LOCKED;
 import static java.lang.System.exit;
 
 public class Door extends Observable implements Agent, Runnable{
@@ -50,7 +51,7 @@ public class Door extends Observable implements Agent, Runnable{
         }
     }
 
-    // TODO : supprimer le code duppliquer en déclarant cette méthode dans une classe statique avec id en argument
+    // TODO : supprimer le code dupliqué en déclarant cette méthode dans une classe statique avec id en argument
     public RemoteSpace tsServerConnection(){
         System.out.println("Connexion de "+ id + " à " + TupleSpace.CLIENT_URI + "...");
         RemoteSpace server = null;
@@ -70,9 +71,9 @@ public class Door extends Observable implements Agent, Runnable{
 
     public void manageState() throws InterruptedException {
         Object[] response;
-        response = server.get(new ActualField(id), new FormalField(Boolean.class));
+        response = server.get(new ActualField(id), new ActualField(LOCKED), new FormalField(Boolean.class));
         if(response != null){
-            open = (Boolean) response[1];
+            open = ! (Boolean) response[2];
             setChanged();
             notifyObservers();
         }

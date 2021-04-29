@@ -61,7 +61,7 @@ public class LockManager implements Runnable {
         String lightID;
 
         if (canOpen){ // Autorisé à passer
-            lightID = (direction.equals(CrossingManager.IN_DIRECTION))? extSCR.getRedLightID() : inSCR.getGreenLightID();
+            lightID = (direction.equals(CrossingManager.IN_DIRECTION))? extSCR.getGreenLightID() : inSCR.getGreenLightID();
             ts.put(lightID, Light.LIGHTING, Boolean.TRUE);
             ts.put(doorID, Door.LOCKING, Boolean.FALSE);
             ts.put(doorID, LockTimer.ACTIVATION, swipeCardId);
