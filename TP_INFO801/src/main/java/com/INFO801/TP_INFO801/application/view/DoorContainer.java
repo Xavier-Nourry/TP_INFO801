@@ -37,7 +37,8 @@ public class DoorContainer extends JPanel implements UIComponent, Observer {
         this.passMenuContainer = new PassMenuContainer(this.door);
 
         this.crossDoor = new JButton(Constants.CROSS_DOOR);
-        this.crossDoor.addActionListener(new CrossDoorListener(this.door));
+        // TODO : supprimer second paramètre de CrossDoorListener
+        this.crossDoor.addActionListener(new CrossDoorListener(this.door, this.crossDoor));
 
         this.add(this.id);
         this.add(this.state);
@@ -51,6 +52,13 @@ public class DoorContainer extends JPanel implements UIComponent, Observer {
     @Override
     public void update(Observable o, Object arg) {
         manageState();
+        notAllowedCrossingDetection();
+    }
+
+    private void notAllowedCrossingDetection() {
+        if(this.door.notAllowedCross){
+            JOptionPane.showMessageDialog(getParent(), Constants.NOT_ALLOWED_CROSSING + this.door.id);
+        }
     }
 
     private void manageState(){

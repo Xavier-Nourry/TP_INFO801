@@ -15,7 +15,8 @@ public class Door extends Observable implements Agent, Runnable{
     public final OutsideGreenLightIndicator ogli; // Outside
     public final OutsideRedLightIndicator orli; // Outside
     public String id;
-    public boolean open;
+    public Boolean open;
+    public Boolean notAllowedCross;
 
     public Door(String buildingID, int id){
         this.id = buildingID + " - Door" + id;
@@ -24,7 +25,8 @@ public class Door extends Observable implements Agent, Runnable{
         this.irli = new InsideRedLightIndicator(this.id);
         this.ogli = new OutsideGreenLightIndicator(this.id);
         this.orli = new OutsideRedLightIndicator(this.id);
-        this.open = false;
+        this.open = Boolean.FALSE;
+        this.notAllowedCross = Boolean.FALSE;
     }
 
     @Override
@@ -66,7 +68,7 @@ public class Door extends Observable implements Agent, Runnable{
         Object[] response;
         response = server.get(new ActualField(id), new FormalField(Boolean.class));
         if(response != null){
-            open = (boolean) response[1];
+            open = (Boolean) response[1];
             setChanged();
             notifyObservers();
         }
@@ -96,6 +98,16 @@ public class Door extends Observable implements Agent, Runnable{
             server.put(new ActualField(id + " - External Reader"), new ActualField(passID));
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void notAllowedCrossingDectection() throws InterruptedException {
+        Object[] response;
+        response = server.get(new ActualField(id), new ActualField("UnauthorizedCrossing"), new FormalField(Boolean.class));
+        if(response != null){
+            notAllowedCross = (Boolean) response[1];
+            setChanged();
+            notifyObservers();
         }
     }
 }

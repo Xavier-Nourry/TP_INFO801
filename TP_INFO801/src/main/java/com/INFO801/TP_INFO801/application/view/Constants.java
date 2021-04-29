@@ -21,4 +21,5 @@ public class Constants {
     public static final String[] PASS_READER_CHOICES = {ENTRY, EXIT};
     public static final String START_FIRE = "Déclencher un feu";
     public static final String STOP_FIRE = "Arrêter le feu";
+    public static final String NOT_ALLOWED_CROSSING = "Un franchissement non autorisé à été détecté à la porte : ";
 }
