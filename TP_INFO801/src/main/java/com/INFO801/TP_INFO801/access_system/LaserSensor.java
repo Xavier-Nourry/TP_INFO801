@@ -4,31 +4,38 @@ import org.jspace.ActualField;
 import org.jspace.RemoteSpace;
 
 public class LaserSensor implements Runnable {
-    private final String sensorName;
-    private final String doorName;
+    private static final String DETECTED_CROSSING = "detectedCrossing";
+    private final String doorID;
+    private final String sensorID;
+    private final RemoteSpace ts;
 
-    public LaserSensor(String doorName) {
-        this.sensorName = doorName + " - Laser";
-        this.doorName = doorName;
+
+    public LaserSensor(String doorID) {
+        this.doorID = doorID;
+        this.sensorID = doorID + " - Laser";
+
+        // Connexion à l'espace de tuple
+        ts = TupleSpace.remoteSpaceConnexion(sensorID);
     }
 
     @Override
     public void run() {
-        RemoteSpace ts = TupleSpace.remoteSpaceConnexion(sensorName);
-        assert ts != null;
-
-        while (true){
-            monitorCrossing(ts);
-        }
+        monitor();
     }
 
-    private void monitorCrossing(RemoteSpace ts) {
+    private void monitor() {
         try {
-            ts.get(new ActualField(sensorName));
-            ts.put(doorName, CrossingManager.CROSSING);
+            monitorCrossingDetection();
         } catch (InterruptedException e) {
-            System.out.println(sensorName + " : error while communicating with the tuple space");
+            System.out.println(sensorID + " : error while communicating with the tuple space");
             e.printStackTrace();
         }
+
+        monitor(); // S'appelle récursivement
+    }
+
+    private void monitorCrossingDetection() throws InterruptedException {
+        ts.get(new ActualField(sensorID), new ActualField(DETECTED_CROSSING));
+        ts.put(doorID, CrossingManager.CROSSING);
     }
 }
