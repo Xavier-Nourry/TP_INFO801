@@ -5,51 +5,72 @@ import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
 public class Door implements Runnable {
-    public static final String CROSSING = "Crossing";
-    public static final String LOCKING = "Locking";
-    public static final String CROSSING_REQUEST = "CrossingRequest";
-    private final String buildingName;
-    private final String doorName;
+    public static final String LOCKED = "Locked";
+    protected static final String LOCKING = "Locking";
+    private final String buildingID;
+    public final String doorID;
+    private final RemoteSpace ts;
 
-    public Door(String buildingName, int doorNumber) {
-        this.buildingName = buildingName;
-        this.doorName = buildingName + " - Door" + doorNumber;
+
+    public Door(String buildingID, int doorNumber) {
+        this.buildingID = buildingID;
+        this.doorID = buildingID + " - Door" + doorNumber;
+
+        // Connexion à l'espace de tuple
+        ts = remoteConnections.remoteSpaceConnexion(doorID);
+    }
+
+    public String getId() {
+        return doorID;
     }
 
     @Override
     public void run() {
-        Thread laserSensor = new Thread(new LaserSensor(doorName));
-        laserSensor.start();
+        // On lance le processus de gestion de passage
+        new Thread(new CrossingManager(buildingID, doorID)).start();
 
-        Thread externalSwipeCardReader = new Thread(new ExternalSwipeCardReader(buildingName, doorName));
-        externalSwipeCardReader.start();
-        Thread internalSwipeCardReader = new Thread(new InternalSwipeCardReader(buildingName, doorName));
-        internalSwipeCardReader.start();
+        setInitialState();
 
-        RemoteSpace ts = TupleSpace.remoteSpaceConnexion(doorName);
-        assert ts != null;
+        monitor();
+    }
 
-        // Initial state: the door is locked
+    private void setInitialState() {
+        // Etat initial: la porte est verrouillée
         try {
-            ts.put(this.doorName, true);
+            ts.put(this.doorID, LOCKED, Boolean.TRUE);
         } catch (InterruptedException e) {
-            System.out.println(doorName + " : erreur while communicating with the tuple space");
+            System.out.println(doorID + " : error while communicating with the tuple space");
             e.printStackTrace();
-            return;
-        }
-
-        while (true){
-            this.monitorLocking(ts);
         }
     }
 
-    private void monitorLocking(RemoteSpace ts) {
+    private void monitor() {
         try {
-            Object[] locked = ts.get(new ActualField(doorName), new ActualField(LOCKING), new FormalField(Boolean.class));
-            ts.put(doorName, locked[2]);
+            monitorLocking();
         } catch (InterruptedException e) {
-            System.out.println(doorName + " : erreur while communicating with the tuple space");
+            System.out.println(doorID + " : error while communicating with the tuple space");
             e.printStackTrace();
         }
+        monitor(); // S'appelle récursivement
+    }
+
+    // Gère le verrouillage/déverrouillage de la porte
+    private void monitorLocking() throws InterruptedException {
+        Object[] lockingAction = ts.get(
+                new ActualField(doorID),
+                new ActualField(LOCKING),
+                new FormalField(Boolean.class)
+        );
+        Boolean mustLocked = (Boolean) lockingAction[2];
+
+        Object[] blockedLockingAction = ts.queryp(
+                new ActualField(buildingID),
+                new ActualField(Building.DOOR_RELEASE)
+        );
+        boolean lockingAuthorization = blockedLockingAction == null;
+
+        // On peut changer le statut de la porte si on cherche à déverrouiller, ou si on a le droit de verrouiller
+        if (!mustLocked || lockingAuthorization)
+                ts.put(doorID, LOCKED , mustLocked);
     }
 }

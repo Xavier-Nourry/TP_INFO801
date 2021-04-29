@@ -1,12 +1,30 @@
 package com.INFO801.TP_INFO801.access_system;
 
+import com.INFO801.TP_INFO801.database_server.PassServer;
+
+import java.rmi.RemoteException;
+
 public class BuildingComplex {
     public static void main(String[] args){
-        // On crée deux bâtiments dans le complexes, et on met en route leur système de contrôle d'accès
-        Thread building1 = new Thread(new Building("Building1", 2));
-        building1.start();
+        com.INFO801.TP_INFO801.database_server.Building[] dbBuildings;
+        String buildingComplexID = "BuildingComplex";
+        try {
+            // On récupère les buildings sur le server
+            PassServer dbManager = remoteConnections.remoteDatabaseConnection(buildingComplexID);
+            assert dbManager != null;
+            dbBuildings = dbManager.getBuildings();
 
-        Thread building2 = new Thread(new Building("Building2", 2));
-        building2.start();
+        } catch (RemoteException e) {
+            System.out.println(buildingComplexID +": error while communicating with the db");
+            e.printStackTrace();
+            return;
+        }
+
+        // On crée les building du server dans le système d'accès:
+        Building accessSystemBuilding;
+        for (com.INFO801.TP_INFO801.database_server.Building dbBuilding : dbBuildings) {
+            accessSystemBuilding = new Building(dbBuilding);
+            new Thread(accessSystemBuilding).start();
+        }
     }
 }

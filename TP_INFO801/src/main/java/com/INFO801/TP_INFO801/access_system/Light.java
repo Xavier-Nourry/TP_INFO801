@@ -9,29 +9,42 @@ public class Light implements Runnable {
     public static final String RED = "Red";
     public static final String LIGHTING = "Lighting";
 
-    private final String lightName;
+    public final String lightID;
+    private final RemoteSpace ts;
 
-    public Light(String readerName, String color) {
-        this.lightName = readerName + " - " + color + " Light";
+    public Light(String readerID, String color) {
+        this.lightID = readerID + " - " + color + " Light";
+
+        // Connexion à l'espace de tuple
+        ts = remoteConnections.remoteSpaceConnexion(lightID);
+    }
+
+    public String getLightID() {
+        return lightID;
     }
 
     @Override
     public void run() {
-        RemoteSpace ts = TupleSpace.remoteSpaceConnexion(lightName);
-        assert ts != null;
-
-        while (true){
-            monitorLighting(ts);
-        }
+        monitor();
     }
 
-    private void monitorLighting(RemoteSpace ts) {
+    private void monitor() {
         try {
-            Object[] lighting = ts.get(new ActualField(lightName), new ActualField(LIGHTING), new FormalField(Boolean.class));
-            ts.put(lightName, lighting[2]);
+            monitorLighting();
         } catch (InterruptedException e) {
-            System.out.println(lightName + " : error while communicating with the tuple space");
+            System.out.println(lightID + " : error while communicating with the tuple space");
             e.printStackTrace();
         }
+        monitor(); // S'appelle récursivement
+    }
+
+    private void monitorLighting() throws InterruptedException {
+        Object[] lighting = ts.get(
+                new ActualField(lightID),
+                new ActualField(LIGHTING),
+                new FormalField(Boolean.class));
+        Boolean mustLight = (Boolean) lighting[2];
+
+        ts.put(lightID, mustLight);
     }
 }

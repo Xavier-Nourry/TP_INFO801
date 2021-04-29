@@ -5,43 +5,52 @@ import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
 abstract public class SwipeCardReader implements Runnable{
-    public final static String OUT_DIRECTION = "Out";
-    public final static String IN_DIRECTION = "In";
-
-
+    private final String buildingID;
+    private final String doorID;
+    protected final String readerID;
+    private final RemoteSpace ts;
     protected String direction;
-    protected final String readerName;
-    private final String doorName;
-    private final String buildingName;
+    protected String greenLightID;
 
-    protected SwipeCardReader(String buildingName, String doorName, String position) {
-        this.readerName = doorName + " - " + position + " Reader";
-        this.doorName = doorName;
-        this.buildingName = buildingName;
+    protected SwipeCardReader(String buildingID, String doorID, String position) {
+        this.readerID = doorID + " - " + position + " Reader";
+        this.doorID = doorID;
+        this.buildingID = buildingID;
+
+        // Connexion à l'espace de tuple
+        ts = remoteConnections.remoteSpaceConnexion(readerID);
     }
-
 
     @Override
     public void run() {
-        startLights();
+        // On demander le lancement des processus de voyants
+        startLightThreads();
 
-        RemoteSpace ts = TupleSpace.remoteSpaceConnexion(readerName);
-        assert ts != null;
-
-        while (true){
-            this.monitorReading(ts);
-        }
+        monitor();
     }
 
-    protected abstract void startLights();
+    protected abstract void startLightThreads();
 
-    private void monitorReading(RemoteSpace ts) {
+    private void monitor() {
         try {
-            Object[] request = ts.get(new ActualField(readerName), new FormalField(int.class));
-            ts.put(buildingName, doorName, Door.CROSSING_REQUEST, direction, request[1]);
+            monitorReading();
         } catch (InterruptedException e) {
-            System.out.println(readerName + " : erreur while communicating with the tuple space");
+            System.out.println(readerID + " : error while communicating with the tuple space");
             e.printStackTrace();
         }
+        monitor(); // S'appelle récursivement
+    }
+
+    private void monitorReading() throws InterruptedException {
+        Object[] request = ts.get(
+                new ActualField(readerID),
+                new FormalField(String.class));
+        String swipeCardId = (String) request[1];
+
+        ts.put(buildingID, doorID, CrossingManager.CROSSING_REQUEST, direction, swipeCardId);
+    }
+
+    public String getGreenLightID() {
+        return greenLightID;
     }
 }
