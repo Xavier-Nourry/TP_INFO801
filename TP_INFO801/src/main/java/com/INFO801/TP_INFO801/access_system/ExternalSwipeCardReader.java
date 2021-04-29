@@ -19,4 +19,8 @@ public class ExternalSwipeCardReader extends SwipeCardReader {
         Thread redLight = new Thread(rLight);
         redLight.start();
     }
+
+    public String getRedLightID() {
+        return redLightName;
+    }
 }

@@ -42,4 +42,8 @@ abstract public class SwipeCardReader implements Runnable{
             e.printStackTrace();
         }
     }
+
+    public String getGreenLightID() {
+        return greenLightName;
+    }
 }
