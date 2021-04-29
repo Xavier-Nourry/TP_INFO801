@@ -13,8 +13,6 @@ public class Constants {
     public static final Color RED_ON_COLOR = Color.RED;
     public static final Color GREEN_OFF_COLOR = Color.GREEN.darker().darker();
     public static final Color RED_OFF_COLOR = Color.RED.darker();
-    public static final Color ORANGE_ON_COLOR = Color.ORANGE;
-    public static final Color ORANGE_OFF_COLOR = Color.ORANGE.darker();
     public static final String ENTRY = "Entrée";
     public static final String EXIT = "Sortie";
     public static final String CONFIRM = "Confirmer";

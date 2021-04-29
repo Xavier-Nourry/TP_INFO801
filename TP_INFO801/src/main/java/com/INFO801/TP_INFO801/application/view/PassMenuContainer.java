@@ -6,23 +6,17 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PassMenuContainer extends JPanel{
-    private Door door;
-    private JComboBox<String> badgerChoice;
-    private JTextField passID;
-    private JButton confirm;
 
     public PassMenuContainer(Door door){
-        this.door = door;
-        //this.door.addObserver(this);
         this.setLayout(new GridLayout(3, 1));
-        this.badgerChoice = new JComboBox<>(Constants.PASS_READER_CHOICES);
-        this.passID = new JTextField();
-        this.confirm = new JButton(Constants.CONFIRM);
-        this.confirm.addActionListener(new ReadPassListener(this.door, this.passID, this.badgerChoice));
+        JComboBox<String> badgerChoice = new JComboBox<>(Constants.PASS_READER_CHOICES);
+        JTextField passID = new JTextField();
+        JButton confirm = new JButton(Constants.CONFIRM);
+        confirm.addActionListener(new ReadPassListener(door, passID, badgerChoice));
 
-        this.add(this.badgerChoice);
-        this.add(this.passID);
-        this.add(this.confirm);
+        this.add(badgerChoice);
+        this.add(passID);
+        this.add(confirm);
     }
 
 

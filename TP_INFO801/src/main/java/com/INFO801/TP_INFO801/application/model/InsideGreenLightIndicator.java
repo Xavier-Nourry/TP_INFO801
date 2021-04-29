@@ -5,22 +5,19 @@ import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.Observable;
 import static java.lang.System.exit;
 
-public class InsideGreenLightIndicator extends Observable implements Agent, Runnable, LightIndicator {
+public class InsideGreenLightIndicator extends Observable implements Agent, Runnable{
     private final String id;
     private final RemoteSpace server;
     public Boolean on;
-    private Color color;
 
     public InsideGreenLightIndicator(String id){
         this.id = id + " - Internal Reader - Green Light";
         this.server = tsServerConnection();
         this.on = false;
-        this.color = Color.GREEN;
     }
 
     @Override
@@ -34,6 +31,7 @@ public class InsideGreenLightIndicator extends Observable implements Agent, Runn
         }
     }
 
+    // TODO : supprimer le code duppliquer en déclarant cette méthode dans une classe statique avec id en argument
     public RemoteSpace tsServerConnection(){
         System.out.println("Connexion de "+ id + " à " + TupleSpace.CLIENT_URI + "...");
         RemoteSpace server = null;
@@ -59,10 +57,5 @@ public class InsideGreenLightIndicator extends Observable implements Agent, Runn
             setChanged();
             notifyObservers();
         }
-    }
-
-    @Override
-    public Color getColor() {
-        return this.color;
     }
 }

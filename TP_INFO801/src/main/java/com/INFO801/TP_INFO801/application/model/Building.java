@@ -1,8 +1,5 @@
 package com.INFO801.TP_INFO801.application.model;
 
-import org.jspace.ActualField;
-import org.jspace.RemoteSpace;
-
 import java.util.Observable;
 
 public class Building extends Observable{
@@ -25,8 +22,8 @@ public class Building extends Observable{
     }
 
     public void runAll(){
-        for(int i = 0; i < doors.length; i++){
-            new Thread(doors[i]).start();
+        for (Door door : doors) {
+            new Thread(door).start();
         }
     }
 

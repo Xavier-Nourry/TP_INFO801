@@ -1,6 +1,5 @@
 package com.INFO801.TP_INFO801.application.controller;
 
-import com.INFO801.TP_INFO801.application.model.Building;
 import com.INFO801.TP_INFO801.application.view.Constants;
 
 import javax.swing.*;
@@ -8,11 +7,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class StartFireListener implements ActionListener {
-    private Building building;
-    private JButton fire;
+    // TODO : à décommenter
+    //private final Building building;
+    private final JButton fire;
 
-    public StartFireListener(Building building, JButton fire) {
-        this.building = building;
+    public StartFireListener(JButton fire) { // TODO : ajouter building aux paramètres
+        // TODO : à décommenter
+        //this.building = building;
         this.fire = fire;
     }
 

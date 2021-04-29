@@ -4,15 +4,14 @@ import com.INFO801.TP_INFO801.application.model.OutsideGreenLightIndicator;
 import com.INFO801.TP_INFO801.application.model.OutsideRedLightIndicator;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
 public class EntryLightsContainer extends JPanel implements Observer {
-    private OutsideGreenLightIndicator ogli;
-    private OutsideRedLightIndicator orli;
-    private JLabel gl;
-    private JLabel rl;
+    private final OutsideGreenLightIndicator ogli;
+    private final OutsideRedLightIndicator orli;
+    private final JLabel gl;
+    private final JLabel rl;
 
     public EntryLightsContainer(OutsideGreenLightIndicator ogli, OutsideRedLightIndicator orli){
         this.ogli = ogli;
@@ -27,6 +26,7 @@ public class EntryLightsContainer extends JPanel implements Observer {
         this.add(rl);
     }
 
+    // TODO : fonction de maj des LightsContainer doit être commune
     @Override
     public void update(Observable o, Object arg) {
         if(ogli.on){

@@ -8,8 +8,8 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class MainFrame extends JFrame implements UIComponent{
-    private Infrastructure infra;
-    private JPanel mainPanel;
+    private final Infrastructure infra;
+    private final JPanel mainPanel;
 
     public MainFrame(Infrastructure infra) {
         super("TP INFO801");

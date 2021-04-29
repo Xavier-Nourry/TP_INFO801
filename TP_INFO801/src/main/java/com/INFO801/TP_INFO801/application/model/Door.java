@@ -48,6 +48,7 @@ public class Door extends Observable implements Agent, Runnable{
         }
     }
 
+    // TODO : supprimer le code duppliquer en déclarant cette méthode dans une classe statique avec id en argument
     public RemoteSpace tsServerConnection(){
         System.out.println("Connexion de "+ id + " à " + TupleSpace.CLIENT_URI + "...");
         RemoteSpace server = null;

@@ -8,9 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class CrossDoorListener implements ActionListener {
-    private Door door;
+    private final Door door;
     // TODO : à supprimer
-    private JButton button;
+    private final JButton button;
 
     // TODO : supprimer second paramètre de CrossDoorListener
     public CrossDoorListener(Door door, JButton button) {

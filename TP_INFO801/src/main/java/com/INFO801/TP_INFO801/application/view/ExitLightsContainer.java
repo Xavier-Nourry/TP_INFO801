@@ -2,19 +2,16 @@ package com.INFO801.TP_INFO801.application.view;
 
 import com.INFO801.TP_INFO801.application.model.InsideGreenLightIndicator;
 import com.INFO801.TP_INFO801.application.model.InsideRedLightIndicator;
-import com.INFO801.TP_INFO801.application.model.OutsideGreenLightIndicator;
-import com.INFO801.TP_INFO801.application.model.OutsideRedLightIndicator;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
 public class ExitLightsContainer extends JPanel implements Observer {
-    private InsideGreenLightIndicator igli;
-    private InsideRedLightIndicator irli;
-    private JLabel gl;
-    private JLabel rl;
+    private final InsideGreenLightIndicator igli;
+    private final InsideRedLightIndicator irli;
+    private final JLabel gl;
+    private final JLabel rl;
 
     public ExitLightsContainer(InsideGreenLightIndicator igli, InsideRedLightIndicator irli){
         this.igli = igli;
@@ -29,6 +26,7 @@ public class ExitLightsContainer extends JPanel implements Observer {
         this.add(rl);
     }
 
+    // TODO : fonction de maj des LightsContainer doit être commune
     @Override
     public void update(Observable o, Object arg) {
         if(igli.on){

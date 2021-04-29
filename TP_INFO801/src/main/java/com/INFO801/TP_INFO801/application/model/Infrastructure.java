@@ -16,8 +16,8 @@ public class Infrastructure {
     }
 
     public void runAll(){
-        for(int i = 0; i < buildings.length; i++){
-            buildings[i].runAll();
+        for (Building building : buildings) {
+            building.runAll();
         }
     }
 }
