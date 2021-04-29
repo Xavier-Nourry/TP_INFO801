@@ -34,4 +34,8 @@ public class Light implements Runnable {
             e.printStackTrace();
         }
     }
+
+    public String getLightID() {
+        return lightName;
+    }
 }

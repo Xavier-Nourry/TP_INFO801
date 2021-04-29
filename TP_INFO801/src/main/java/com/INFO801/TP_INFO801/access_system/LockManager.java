@@ -5,8 +5,8 @@ import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
 public class LockManager implements Runnable {
-    private final String doorID;
     private final String buildingID;
+    private final String doorID;
     private final String managerID;
     private final RemoteSpace ts;
     private String redExternalLightID;

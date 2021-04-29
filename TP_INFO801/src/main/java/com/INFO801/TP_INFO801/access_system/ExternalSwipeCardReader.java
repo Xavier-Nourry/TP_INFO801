@@ -1,7 +1,7 @@
 package com.INFO801.TP_INFO801.access_system;
 
 public class ExternalSwipeCardReader extends SwipeCardReader {
-    public String redLightName;
+    public String redLightID;
 
     public ExternalSwipeCardReader(String buildingName, String doorName) {
         super(buildingName, doorName, "External");
@@ -9,18 +9,22 @@ public class ExternalSwipeCardReader extends SwipeCardReader {
     }
 
     @Override
-    public void startLights() {
-        Light gLight = new Light(readerName, Light.GREEN);
-        greenLightName = gLight.lightName;
-        Thread greenLight = new Thread(gLight);
-        greenLight.start();
-        Light rLight = new Light(readerName, Light.RED);
-        redLightName = rLight.lightName;
-        Thread redLight = new Thread(rLight);
-        redLight.start();
+    public void startLightThreads() {
+        // On lance le processus de voyant vert
+        Light greenLight = new Light(readerID, Light.GREEN);
+        new Thread(greenLight).start();
+
+        // On lance le processus de voyant rouge
+        Light redLight = new Light(readerID, Light.RED);
+        new Thread(redLight).start();
+
+        // On garde les id des voyants en attribut
+        greenLightID = greenLight.getLightID();
+        redLightID = redLight.getLightID();
+
     }
 
     public String getRedLightID() {
-        return redLightName;
+        return redLightID;
     }
 }

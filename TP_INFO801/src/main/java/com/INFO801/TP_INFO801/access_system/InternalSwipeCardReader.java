@@ -7,10 +7,12 @@ public class InternalSwipeCardReader extends SwipeCardReader {
     }
 
     @Override
-    public void startLights() {
-        Light gLight = new Light(readerName, Light.GREEN);
-        greenLightName = gLight.lightName;
-        Thread greenLight = new Thread(gLight);
-        greenLight.start();
+    public void startLightThreads() {
+        // On lance le processus de voyant vert
+        Light greenLight = new Light(readerID, Light.GREEN);
+        new Thread(greenLight).start();
+
+        // On garde l'id du voyant en attribut
+        greenLightID = greenLight.getLightID();
     }
 }
