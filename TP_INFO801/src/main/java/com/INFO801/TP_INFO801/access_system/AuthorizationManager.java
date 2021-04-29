@@ -51,7 +51,7 @@ public class AuthorizationManager implements Runnable {
             String direction = (String) request[3];
             String swipeCardId = (String) request[4];
             boolean authorization;
-            if (direction.equals(SwipeCardReader.OUT_DIRECTION)){
+            if (direction.equals(CrossingManager.OUT_DIRECTION)){
                 authorization = true;
             }
             else{

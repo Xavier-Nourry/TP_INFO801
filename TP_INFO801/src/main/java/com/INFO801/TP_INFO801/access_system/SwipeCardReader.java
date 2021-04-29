@@ -5,8 +5,6 @@ import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
 abstract public class SwipeCardReader implements Runnable{
-    public final static String OUT_DIRECTION = "Out";
-    public final static String IN_DIRECTION = "In";
     public String greenLightName;
 
     protected String direction;

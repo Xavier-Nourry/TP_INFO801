@@ -48,7 +48,7 @@ public class Door implements Runnable {
         try {
             monitorLocking();
         } catch (InterruptedException e) {
-            System.out.println(doorID + " : erreur while communicating with the tuple space");
+            System.out.println(doorID + " : error while communicating with the tuple space");
             e.printStackTrace();
         }
         monitor(); // S'appelle récursivement

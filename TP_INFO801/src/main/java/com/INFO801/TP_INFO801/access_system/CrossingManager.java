@@ -15,66 +15,88 @@ public class CrossingManager implements Runnable {
     public static final String CROSSING = "Crossing";
     public static final String CROSSING_REQUEST = "CrossingRequest";
     private static final String UNAUTHORIZED_CROSSING = "UnauthorizedCrossing";
-    private final String doorID;
-    private final String managerName;
-    private PassServer dbManager;
+    public final static String OUT_DIRECTION = "Out";
+    public final static String IN_DIRECTION = "In";
+
     private final String buildingID;
+    private final String doorID;
+    private final String managerID;
+    private final RemoteSpace ts;
+    private PassServer dbManager;
 
     public CrossingManager(String buildingID, String doorID) {
         this.buildingID = buildingID;
         this.doorID = doorID;
-        this.managerName = doorID + "- CrossingManager";
+        this.managerID = doorID + "- CrossingManager";
+
         try {
+            // Connexion au la base de données
             Registry reg = LocateRegistry.getRegistry("127.0.0.1", Server.PORT);
             dbManager = (PassServer) reg.lookup("PassServer");
         } catch (RemoteException | NotBoundException e) {
-            System.out.println(managerName + " : error while communicating with the db");
+            System.out.println(managerID + " : error while communicating with the db");
             e.printStackTrace();
         }
+
+        // Connexion à l'espace de tuple
+        ts = TupleSpace.remoteSpaceConnexion(managerID);
     }
 
     @Override
     public void run() {
-        Thread laserSensor = new Thread(new LaserSensor(doorID));
-        laserSensor.start();
-        ExternalSwipeCardReader extSCR = new ExternalSwipeCardReader(buildingID, doorID);
-        Thread externalSwipeCardReader = new Thread(extSCR);
-        externalSwipeCardReader.start();
-        InternalSwipeCardReader inSCR = new InternalSwipeCardReader(buildingID, doorID);
-        Thread internalSwipeCardReader = new Thread(inSCR);
-        internalSwipeCardReader.start();
-        Thread lockManager = new Thread(new LockManager(doorID, extSCR.redLightName, extSCR.greenLightName, inSCR.greenLightName));
-        lockManager.start();
+        // On lance le processus de détection de passage
+        new Thread(new LaserSensor(doorID)).start();
 
-        Thread lockTimer= new Thread(new LockTimer(doorID));
-        lockTimer.start();
+        // On lance le processus de gestion du verrouillage
+        new Thread(new LockManager(buildingID, doorID)).start();
 
-        RemoteSpace ts = TupleSpace.remoteSpaceConnexion(managerName);
-        assert ts != null;
-
-        while (true){
-            monitorCrossing(ts);
-        }
+        monitor();
     }
 
-    private void monitorCrossing(RemoteSpace ts) {
+    private void monitor() {
         try {
-            ts.get(new ActualField(doorID), new ActualField(CROSSING));
-            Object[] crosser = ts.getp(new ActualField(doorID), new ActualField(AuthorizationManager.AUTHORIZED_CROSSER),
-                    new FormalField(String.class), new FormalField(String.class));
-            ts.put(doorID, Door.LOCKING, true);
-            if (crosser != null){
-                if (crosser[2].equals(SwipeCardReader.IN_DIRECTION)){
-                    dbManager.enter(buildingID, (String) crosser[3]);
-                }else{
-                    dbManager.exit(buildingID, (String) crosser[3]);
-                }
-            }else{
-                ts.put(buildingID, UNAUTHORIZED_CROSSING);
-            }
-        } catch (InterruptedException | RemoteException e) {
-            System.out.println(doorID + " : error while communicating with the tuple space");
+            monitorCrossing();
+        } catch (InterruptedException e) {
+            System.out.println(managerID + " : error while communicating with the tuple space");
+            e.printStackTrace();
+        } catch (RemoteException e) {
+            System.out.println(managerID + " : error while communicating with the database");
             e.printStackTrace();
         }
+        monitor(); // S'appelle récursivement
+    }
+
+    private void monitorCrossing() throws InterruptedException, RemoteException {
+        ts.get(new ActualField(doorID),
+                new ActualField(CROSSING));
+
+        Object[] crosser = ts.getp(
+                new ActualField(doorID),
+                new ActualField(AuthorizationManager.AUTHORIZED_CROSSER),
+                new FormalField(String.class),
+                new FormalField(String.class));
+
+        if (crosser != null) { // Personne autorisée à entrer
+            String direction = (String) crosser[2];
+            String swipeCardId = (String) crosser[3];
+            if (direction.equals(IN_DIRECTION))
+                dbManager.enter(buildingID, swipeCardId);
+            else
+                dbManager.exit(buildingID, swipeCardId);
+
+        } else // Personne non autorisée à entrer
+            ts.put(buildingID, UNAUTHORIZED_CROSSING);
+
+        // On regarde si quelqu'un d'autre est actuellement autorisé à passer
+        Object[] crosser2 = ts.queryp(
+                new ActualField(doorID),
+                new ActualField(AuthorizationManager.AUTHORIZED_CROSSER),
+                new FormalField(String.class),
+                new FormalField(String.class));
+
+        // Si personne d'autre n'a eu l'autorisation de passer en même temps,
+        // on reverrouille la porte après le passage de la personne précédente
+        if (crosser2 == null)
+            ts.put(doorID, Door.LOCKING, true);
     }
 }

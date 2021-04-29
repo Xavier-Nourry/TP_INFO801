@@ -5,7 +5,7 @@ public class ExternalSwipeCardReader extends SwipeCardReader {
 
     public ExternalSwipeCardReader(String buildingName, String doorName) {
         super(buildingName, doorName, "External");
-        direction = IN_DIRECTION;
+        direction = CrossingManager.IN_DIRECTION;
     }
 
     @Override
