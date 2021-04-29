@@ -41,6 +41,7 @@ public class Door extends Observable implements Agent, Runnable{
         while(true){
             try {
                 manageState();
+                notAllowedCrossingDetection();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -101,7 +102,7 @@ public class Door extends Observable implements Agent, Runnable{
         }
     }
 
-    public void notAllowedCrossingDectection() throws InterruptedException {
+    public void notAllowedCrossingDetection() throws InterruptedException {
         Object[] response;
         response = server.get(new ActualField(id), new ActualField("UnauthorizedCrossing"), new FormalField(Boolean.class));
         if(response != null){
