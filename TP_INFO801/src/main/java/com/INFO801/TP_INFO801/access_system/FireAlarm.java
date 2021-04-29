@@ -5,29 +5,42 @@ import org.jspace.RemoteSpace;
 
 public class FireAlarm implements Runnable {
     private static final String FIRE_ALARM = "FireAlarm";
-    private final String buildingName;
+    public static final String FIRE_ALARM_ON = "FireAlarmOn";
+    public static final String FIRE_ALARM_OFF = "FireAlarmOff";
 
-    public FireAlarm(String buildingName) {
-        this.buildingName = buildingName;
+    private final String buildingID;
+    private final String alarmID;
+    private final RemoteSpace ts;
+
+    public FireAlarm(String buildingID) {
+        this.buildingID = buildingID;
+        this.alarmID = buildingID + " - FireAlarm";
+
+        // Connexion à l'espace de tuple
+        ts = TupleSpace.remoteSpaceConnexion(alarmID);
     }
 
     @Override
     public void run() {
-        RemoteSpace ts = TupleSpace.remoteSpaceConnexion(buildingName);
-        assert ts != null;
-        while (true){
-            this.monitorAlarm(ts);
-        }
+        this.monitor();
     }
 
-    private void monitorAlarm(RemoteSpace ts) {
+    private void monitor() {
         try {
-            ts.get(new ActualField(buildingName), new ActualField(FireManager.FIRE_ALARM_ON));
-            ts.put(buildingName, FIRE_ALARM);
-            ts.get(new ActualField(buildingName), new ActualField(FireManager.FIRE_ALARM_OFF));
-            ts.get(new ActualField(buildingName), new ActualField(FIRE_ALARM));
+            monitorAlarm();
         } catch (InterruptedException e) {
+            System.out.println(alarmID + " : error while communicating with the tuple space");
             e.printStackTrace();
+            return;
         }
+
+        monitor(); // S'appelle récursivement
+    }
+
+    private void monitorAlarm() throws InterruptedException {
+        ts.get(new ActualField(buildingID), new ActualField(FIRE_ALARM_ON));
+        ts.put(buildingID, FIRE_ALARM);
+        ts.get(new ActualField(buildingID), new ActualField(FIRE_ALARM_OFF));
+        ts.get(new ActualField(buildingID), new ActualField(FIRE_ALARM));
     }
 }
