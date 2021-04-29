@@ -132,10 +132,13 @@ public class ControlRoom extends JFrame{
     private JPanel logPanel(){
         JPanel panel = new JPanel();
 
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        listModel.addAll(model.getLogsAsString());
+        LogListModel listModel = new LogListModel(model.getLogsAsString());
+        // subscribe the model to a property listener in the model
+
         // property change listener
         JList<String> list = new JList<>(listModel);
+        model.addPropertyChangeListener(new LogsChangedListener(listModel));
+
         list.setLayoutOrientation(JList.VERTICAL);
         panel.add(list);
 

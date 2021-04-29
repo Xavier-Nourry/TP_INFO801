@@ -18,6 +18,10 @@ public class LogEntry implements Serializable {
         this.d = d;
     }
 
+    public Date getDate() {
+        return d;
+    }
+
     @Override
     public String toString() {
         return String.format("[%s] %s (%s)", type, info, d.toString());

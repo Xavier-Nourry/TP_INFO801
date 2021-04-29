@@ -7,10 +7,7 @@ import java.beans.PropertyChangeSupport;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -50,7 +47,7 @@ public class PassManagerClient {
         String[] typesToUpdate = Arrays.stream(newLogs).map(LogEntry::getType).distinct().toArray(String[]::new);
 
         if(typesToUpdate.length>0){
-            changes.firePropertyChange("logs", null, server.getLogs());
+            changes.firePropertyChange("logs", null, getLogsAsString());
         }
 
         for(String type : typesToUpdate){
@@ -122,9 +119,18 @@ public class PassManagerClient {
         changes.removePropertyChangeListener(listener);
     }
 
-    public List<String> getLogsAsString() {
+    public String[] getLogsAsString() {
         try {
-            return Arrays.stream(server.getLogs()).map(LogEntry::toString).collect(Collectors.toList());
+            LogEntry[] entries = server.getLogs();
+            String[] res = new String[entries.length];
+            return Arrays
+                    .stream(entries)
+                    .sorted(
+                            (LogEntry e, LogEntry e2)->((int)(e2.getDate().getTime()-e.getDate().getTime()))
+                    )
+                    .map(LogEntry::toString)
+                    .collect(Collectors.toList())
+                    .toArray(res);
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;
