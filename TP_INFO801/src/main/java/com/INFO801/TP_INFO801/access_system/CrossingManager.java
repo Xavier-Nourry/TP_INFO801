@@ -18,7 +18,7 @@ public class CrossingManager implements Runnable {
     private final String doorID;
     private final String managerID;
     private final RemoteSpace ts;
-    private PassServer dbManager;
+    private final PassServer dbManager;
 
     public CrossingManager(String buildingID, String doorID) {
         this.buildingID = buildingID;

@@ -13,7 +13,7 @@ public class AuthorizationManager implements Runnable {
     private final String managerID;
     private final String buildingID;
     private final RemoteSpace ts;
-    private PassServer dbManager;
+    private final PassServer dbManager;
 
     public AuthorizationManager(String buildingName) {
         this.managerID = buildingName + " - authorizationManager";

@@ -1,7 +1,10 @@
 package com.INFO801.TP_INFO801.access_system;
 
+import com.INFO801.TP_INFO801.database_server.PassServer;
 import org.jspace.ActualField;
 import org.jspace.RemoteSpace;
+
+import java.rmi.RemoteException;
 
 
 public class FireManager implements Runnable {
@@ -10,6 +13,7 @@ public class FireManager implements Runnable {
     private final String buildingID;
     private final String managerID;
     private final RemoteSpace ts;
+    private final PassServer dbManager;
 
     public FireManager(String buildingID) {
         this.buildingID = buildingID;
@@ -17,6 +21,9 @@ public class FireManager implements Runnable {
 
         // Connexion à l'espace de tuple
         ts = remoteConnections.remoteSpaceConnexion(managerID);
+
+        // Connexion à la base de données
+        dbManager = remoteConnections.remoteDatabaseConnection(managerID);
     }
 
     @Override
@@ -37,12 +44,15 @@ public class FireManager implements Runnable {
             System.out.println(managerID + " : error while communicating with the tuple space");
             e.printStackTrace();
             return;
+        } catch (RemoteException e) {
+            System.out.println(managerID + " : error while communicating with the database");
+            e.printStackTrace();
         }
 
         monitor(); // S'appelle récursivement
     }
 
-    private void monitorFireManagement() throws InterruptedException {
+    private void monitorFireManagement() throws InterruptedException, RemoteException {
         ts.get(new ActualField(buildingID),
                 new ActualField(FireDetector.FIRE_DETECTED));
 
@@ -50,7 +60,7 @@ public class FireManager implements Runnable {
         ts.put(buildingID, Building.DOOR_RELEASE);
         ts.put(buildingID, Building.ALL_DOORS_LOCKED, Boolean.FALSE);
 
-        //TODO: ajouter la communication avec la bdd
+        dbManager.triggerAlarm(buildingID);
 
         ts.get(new ActualField(buildingID),
                 new ActualField(FIRE_END));
@@ -58,7 +68,7 @@ public class FireManager implements Runnable {
                 new ActualField(buildingID),
                 new ActualField(Building.DOOR_RELEASE));
 
-        //TODO: ajouter la communication avec la bdd
+        dbManager.shutOffAlarm(buildingID);
 
         ts.put(buildingID, Building.ALL_DOORS_LOCKED, Boolean.TRUE);
         ts.put(buildingID, FireAlarm.FIRE_ALARM_OFF);
