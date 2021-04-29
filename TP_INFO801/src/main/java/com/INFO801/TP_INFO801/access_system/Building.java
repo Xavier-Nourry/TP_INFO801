@@ -50,7 +50,6 @@ public class Building implements Runnable {
         }
 
         monitor(); // S'appelle récursivement
-
     }
 
     // Gestion de l'ensemble des portes du bâtiment

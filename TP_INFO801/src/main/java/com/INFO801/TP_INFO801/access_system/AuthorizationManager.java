@@ -14,56 +14,67 @@ import java.rmi.registry.Registry;
 public class AuthorizationManager implements Runnable {
     public static final String OPENING_AUTHORIZATION = "OpeningAuthorization";
     public static final String AUTHORIZED_CROSSER = "AuthorizedCrosser";
-    private final String managerName;
-    private final String buildingName;
+    private final String managerID;
+    private final String buildingID;
+    private final RemoteSpace ts;
     private PassServer dbManager;
 
     public AuthorizationManager(String buildingName) {
-        this.managerName = buildingName + " - authorizationManager";
-        this.buildingName = buildingName;
+        this.managerID = buildingName + " - authorizationManager";
+        this.buildingID = buildingName;
         try {
+            // Connexion à la base de données
             Registry reg = LocateRegistry.getRegistry("127.0.0.1", Server.PORT);
             dbManager = (PassServer) reg.lookup("PassServer");
         } catch (RemoteException | NotBoundException e) {
-            System.out.println(managerName + " : error while communicating with the db");
+            System.out.println(managerID + " : error while communicating with the db");
             e.printStackTrace();
         }
+
+        // Connexion à l'espace de tuple
+        ts = TupleSpace.remoteSpaceConnexion(buildingID);
     }
 
     @Override
     public void run() {
-        RemoteSpace ts = TupleSpace.remoteSpaceConnexion(managerName);
-        assert ts != null;
-
-        while (true){
-            monitorAuthorizations(ts);
-        }
+        monitor();
     }
 
-    private void monitorAuthorizations(RemoteSpace ts) {
+    private void monitor() {
         try {
-            Object[] request = ts.get(
-                    new ActualField(buildingName), new FormalField(String.class),
-                    new ActualField(CrossingManager.CROSSING_REQUEST),
-                    new FormalField(String.class),  new FormalField(String.class)
-            );
-            String doorName = (String) request[1];
-            String direction = (String) request[3];
-            String swipeCardId = (String) request[4];
-            boolean authorization;
-            if (direction.equals(CrossingManager.OUT_DIRECTION)){
-                authorization = true;
-            }
-            else{
-                authorization = dbManager.canEnter(buildingName, swipeCardId);
-            }
-            if (authorization)
-                ts.put(doorName, AUTHORIZED_CROSSER, direction, swipeCardId);
-            ts.put(doorName, OPENING_AUTHORIZATION, direction, authorization, swipeCardId);
-
-        } catch (InterruptedException | RemoteException e) {
-            System.out.println(managerName + " : error while communicating with the tuple space");
+            monitorAuthorizations();
+        } catch (InterruptedException e) {
+            System.out.println(buildingID + " : error while communicating with the tuple space");
             e.printStackTrace();
+            return;
+        } catch (RemoteException remoteException) {
+            System.out.println(buildingID + " : error while communicating with the dataBase");
+            remoteException.printStackTrace();
         }
+        monitor(); // S'appelle récursivement
+    }
+
+    private void monitorAuthorizations() throws InterruptedException, RemoteException {
+        Object[] request = ts.get(
+                new ActualField(buildingID),
+                new FormalField(String.class),
+                new ActualField(CrossingManager.CROSSING_REQUEST),
+                new FormalField(String.class),
+                new FormalField(String.class)
+        );
+        String doorName = (String) request[1];
+        String direction = (String) request[3];
+        String swipeCardId = (String) request[4];
+
+        boolean authorization;
+        if (direction.equals(CrossingManager.OUT_DIRECTION))
+            authorization = true;
+        else
+            authorization = dbManager.canEnter(buildingID, swipeCardId);
+
+        if (authorization)
+            ts.put(doorName, AUTHORIZED_CROSSER, direction, swipeCardId);
+
+        ts.put(doorName, OPENING_AUTHORIZATION, direction, authorization, swipeCardId);
     }
 }
