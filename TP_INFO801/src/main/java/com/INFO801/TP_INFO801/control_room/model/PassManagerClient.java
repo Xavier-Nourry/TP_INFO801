@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class PassManagerClient {
+    private Date lastCheckTime;
     private PassServer server;
     private final PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
@@ -24,6 +25,7 @@ public class PassManagerClient {
         try{
             Registry reg = LocateRegistry.getRegistry(Server.HOST,Server.PORT);
             server = (PassServer) reg.lookup("PassServer");
+            lastCheckTime = new Date(System.currentTimeMillis());
 
             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
             scheduler.scheduleAtFixedRate(new Runnable() {
@@ -43,15 +45,15 @@ public class PassManagerClient {
     }
 
     private void checkUpdates() throws RemoteException {
-        Date currentTime = new Date(System.currentTimeMillis());
-        LogEntry[] newLogs = server.getLogsAfter(currentTime);
+        LogEntry[] newLogs = server.getLogsAfter(lastCheckTime);
+        lastCheckTime.setTime(System.currentTimeMillis());
         String[] typesToUpdate = Arrays.stream(newLogs).map(LogEntry::getType).distinct().toArray(String[]::new);
 
         if(typesToUpdate.length>0){
-            changes.firePropertyChange("logs", null, server.getPasses());
+            changes.firePropertyChange("logs", null, server.getLogs());
         }
 
-        for(String type : typesToUpdate){
+        /*for(String type : typesToUpdate){
             switch (type) {
                 case "ENTER":
                 case "EXIT":
@@ -65,7 +67,7 @@ public class PassManagerClient {
 
                     break;
             }
-        }
+        }*/
     }
 
     public Pass[] getPasses(){

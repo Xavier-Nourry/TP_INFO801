@@ -25,7 +25,6 @@ public class Server implements PassServer {
         manager.createBuilding("LAUZIERES");
         manager.createPass("1","Jean","Valjean",new String[]{"LAUZIERES"});
         manager.createPass("2","Julien","Sorel",new String[]{"LABOS","LAUZIERES"});
-        manager.notifyEntrance("LABOS","2");
         manager.notifyEntrance("LAUZIERES","1");
         manager.triggerAlarm("LABOS");
         manager.shutOffAlarm("LABOS");
@@ -104,6 +103,8 @@ public class Server implements PassServer {
 
     @Override
     public LogEntry[] getLogsAfter(Date begin){
-        return Arrays.stream(manager.getLogs()).filter(l -> l.d.getTime() >= begin.getTime()).toArray(LogEntry[]::new);
+        return Arrays.stream(manager.getLogs())
+                .filter(l -> l.d.getTime() >= begin.getTime())
+                .toArray(LogEntry[]::new);
     }
 }
