@@ -7,10 +7,11 @@ public class Constants {
     public static final String CLOSED = "Fermée";
     public static final Color OPEN_COLOR = Color.GREEN;
     public static final Color CLOSED_COLOR = Color.RED;
-    public static final String LIGHT = "{0}";
+    public static final String LIGHT_ON = "{0}";
+    public static final String LIGHT_OFF = "0";
     public static final Color GREEN_ON_COLOR = Color.GREEN;
     public static final Color RED_ON_COLOR = Color.RED;
-    public static final Color GREEN_OFF_COLOR = Color.GREEN.darker();
+    public static final Color GREEN_OFF_COLOR = Color.GREEN.darker().darker();
     public static final Color RED_OFF_COLOR = Color.RED.darker();
     public static final Color ORANGE_ON_COLOR = Color.ORANGE;
     public static final Color ORANGE_OFF_COLOR = Color.ORANGE.darker();

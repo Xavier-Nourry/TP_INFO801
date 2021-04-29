@@ -21,9 +21,9 @@ public class ExitLightsContainer extends JPanel implements Observer {
         this.irli = irli;
         this.igli.addObserver(this);
         this.irli.addObserver(this);
-        this.gl = new JLabel(Constants.LIGHT);
+        this.gl = new JLabel(Constants.LIGHT_OFF);
         this.gl.setForeground(Constants.GREEN_OFF_COLOR);
-        this.rl = new JLabel(Constants.LIGHT);
+        this.rl = new JLabel(Constants.LIGHT_OFF);
         this.rl.setForeground(Constants.RED_OFF_COLOR);
         this.add(gl);
         this.add(rl);
@@ -32,15 +32,19 @@ public class ExitLightsContainer extends JPanel implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if(igli.on){
+            this.gl.setText(Constants.LIGHT_ON);
             this.gl.setForeground(Constants.GREEN_ON_COLOR);
         }else{
+            this.gl.setText(Constants.LIGHT_OFF);
             this.gl.setForeground(Constants.GREEN_OFF_COLOR);
         }
 
         if(irli.on){
-            this.gl.setForeground(Constants.RED_ON_COLOR);
+            this.rl.setText(Constants.LIGHT_ON);
+            this.rl.setForeground(Constants.RED_ON_COLOR);
         }else{
-            this.gl.setForeground(Constants.RED_OFF_COLOR);
+            this.rl.setText(Constants.LIGHT_OFF);
+            this.rl.setForeground(Constants.RED_OFF_COLOR);
         }
     }
 }
