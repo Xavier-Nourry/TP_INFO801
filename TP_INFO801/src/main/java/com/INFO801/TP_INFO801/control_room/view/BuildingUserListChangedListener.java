@@ -22,7 +22,11 @@ public class BuildingUserListChangedListener implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if(evt.getPropertyName().equals("users")){
-            list.update(client.getUsersIn(buildingList.getSelectedValue().getBuilding()));
+            BuildingInfo selectedValue = buildingList.getSelectedValue();
+            if(selectedValue==null) return;
+            Building building = selectedValue.getBuilding();
+            Pass[] users = client.getUsersIn(building);
+            list.update(users);
         }
     }
 }

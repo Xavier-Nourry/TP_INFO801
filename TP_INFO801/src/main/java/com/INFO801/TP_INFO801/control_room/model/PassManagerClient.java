@@ -53,7 +53,7 @@ public class PassManagerClient {
             changes.firePropertyChange("logs", null, server.getLogs());
         }
 
-        /*for(String type : typesToUpdate){
+        for(String type : typesToUpdate){
             switch (type) {
                 case "ENTER":
                 case "EXIT":
@@ -61,13 +61,12 @@ public class PassManagerClient {
                     break;
                 case "FIRE_ON":
                 case "FIRE_OFF":
-                    changes.firePropertyChange("buildings", null, server.getBuildings());
+                    //changes.firePropertyChange("buildings", null, server.getBuildings());
                     break;
                 default:
-
                     break;
             }
-        }*/
+        }
     }
 
     public Pass[] getPasses(){
