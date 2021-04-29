@@ -40,7 +40,6 @@ public class Building implements Runnable {
         monitor();
     }
 
-    // Gestion de l'ensemble des portes du bâtiment
     private void monitor() {
         try {
             monitorDoorsManagement();
