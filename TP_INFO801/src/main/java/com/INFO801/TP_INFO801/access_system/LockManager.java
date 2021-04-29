@@ -9,9 +9,8 @@ public class LockManager implements Runnable {
     private final String doorID;
     private final String managerID;
     private final RemoteSpace ts;
-    private String redExternalLightID;
-    private String greenExternalLightID;
-    private String greenInternalLightID;
+    private ExternalSwipeCardReader extSCR;
+    private InternalSwipeCardReader inSCR;
 
     public LockManager(String buildingID, String doorID) {
         this.doorID = doorID;
@@ -28,17 +27,12 @@ public class LockManager implements Runnable {
         new Thread(new LockTimer(doorID)).start();
 
         // On lance le processus de badgeuse extérieure
-        ExternalSwipeCardReader extSCR = new ExternalSwipeCardReader(buildingID, doorID);
+        extSCR = new ExternalSwipeCardReader(buildingID, doorID);
         new Thread(extSCR).start();
 
         // On lance le processus de badgeuse intérieure
-        InternalSwipeCardReader inSCR = new InternalSwipeCardReader(buildingID, doorID);
+        inSCR = new InternalSwipeCardReader(buildingID, doorID);
         new Thread(inSCR).start();
-
-        // On garde les id des voyants pour pouvoir les gérer ensuite
-        redExternalLightID = extSCR.getRedLightID();
-        greenExternalLightID = extSCR.getGreenLightID();
-        greenInternalLightID = inSCR.getGreenLightID();
 
         monitor();
     }
@@ -61,22 +55,23 @@ public class LockManager implements Runnable {
                 new FormalField(Boolean.class),
                 new FormalField(String.class)
         );
-
         String direction = (String) authorisation[2];
         Boolean canOpen = (Boolean) authorisation[3];
         String swipeCardId = (String) authorisation[4];
+        String lightID;
 
         if (canOpen){ // Autorisé à passer
-            String lightID = (direction.equals(CrossingManager.IN_DIRECTION))? greenExternalLightID : greenInternalLightID;
+            lightID = (direction.equals(CrossingManager.IN_DIRECTION))? extSCR.getRedLightID() : inSCR.getGreenLightID();
             ts.put(lightID, Light.LIGHTING, Boolean.TRUE);
             ts.put(doorID, Door.LOCKING, Boolean.FALSE);
             ts.put(doorID, LockTimer.ACTIVATION, swipeCardId);
             Thread.sleep(5000);
             ts.put(lightID, Light.LIGHTING, Boolean.FALSE);
         }else{ // Pas autorisé à passer
-            ts.put(redExternalLightID, Light.LIGHTING, Boolean.TRUE);
+            lightID = extSCR.getRedLightID();
+            ts.put(lightID, Light.LIGHTING, Boolean.TRUE);
             Thread.sleep(10000);
-            ts.put(redExternalLightID, Light.LIGHTING, Boolean.FALSE);
+            ts.put(lightID, Light.LIGHTING, Boolean.FALSE);
         }
     }
 }

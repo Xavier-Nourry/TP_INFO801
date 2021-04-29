@@ -8,9 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ReadPassListener implements ActionListener {
-    private Door door;
-    private JTextField passID;
-    private JComboBox badgerChoice;
+    private final Door door;
+    private final JTextField passID;
+    private final JComboBox badgerChoice;
 
     public ReadPassListener(Door door, JTextField passID, JComboBox<String> badgerChoice) {
         this.door = door;

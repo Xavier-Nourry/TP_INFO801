@@ -17,7 +17,7 @@ public class remoteConnections {
             System.out.println(elementName + " connected to tuple space");
             return ts;
         } catch (IOException e) {
-            System.out.println(elementName + "didn't connect to tuple space");
+            System.out.println(elementName + " didn't connect to tuple space");
             e.printStackTrace();
             return null;
         }

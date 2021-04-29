@@ -9,12 +9,11 @@ public class Light implements Runnable {
     public static final String RED = "Red";
     public static final String LIGHTING = "Lighting";
 
-    public final String lightID;
+    private final String lightID;
     private final RemoteSpace ts;
 
     public Light(String readerID, String color) {
         this.lightID = readerID + " - " + color + " Light";
-
         // Connexion à l'espace de tuple
         ts = remoteConnections.remoteSpaceConnexion(lightID);
     }
@@ -44,7 +43,6 @@ public class Light implements Runnable {
                 new ActualField(LIGHTING),
                 new FormalField(Boolean.class));
         Boolean mustLight = (Boolean) lighting[2];
-
         ts.put(lightID, mustLight);
     }
 }

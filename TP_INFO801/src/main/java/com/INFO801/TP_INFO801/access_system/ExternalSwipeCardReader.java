@@ -21,7 +21,6 @@ public class ExternalSwipeCardReader extends SwipeCardReader {
         // On garde les id des voyants en attribut
         greenLightID = greenLight.getLightID();
         redLightID = redLight.getLightID();
-
     }
 
     public String getRedLightID() {

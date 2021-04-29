@@ -4,8 +4,10 @@ import com.INFO801.TP_INFO801.access_system.TupleSpace;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
+
 import java.io.IOException;
 import java.util.Observable;
+
 import static java.lang.System.exit;
 
 public class Door extends Observable implements Agent, Runnable{
@@ -75,7 +77,7 @@ public class Door extends Observable implements Agent, Runnable{
     // A appeler depuis l'UI pour passer une porte
     public void crossing(){
         try {
-            server.put(new ActualField(id + " - Laser"));
+            server.put(id + " - Laser");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -84,7 +86,7 @@ public class Door extends Observable implements Agent, Runnable{
     // A appeler depuis l'UI pour badger depuis l'intérieur
     public void badgingFromInside(String passID){
         try {
-            server.put(new ActualField(id + " - Internal Reader"), new ActualField(passID));
+            server.put(id + " - Internal Reader", passID);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -93,7 +95,7 @@ public class Door extends Observable implements Agent, Runnable{
     // A appeler depuis l'UI pour badger de l'extérieur
     public void badgingFromOutside(String passID){
         try {
-            server.put(new ActualField(id + " - External Reader"), new ActualField(passID));
+            server.put(id + " - External Reader", passID);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
