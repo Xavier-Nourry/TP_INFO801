@@ -1,5 +1,6 @@
 package com.INFO801.TP_INFO801.application.view;
 
+import com.INFO801.TP_INFO801.application.controller.StartFireListener;
 import com.INFO801.TP_INFO801.application.model.Building;
 import com.INFO801.TP_INFO801.application.model.Door;
 
@@ -7,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BuildingContainer extends JPanel implements UIComponent{
-    private Building building;
+    private final Building building;
 
     public BuildingContainer(Building buidling){
         this.building = buidling;
@@ -18,27 +19,15 @@ public class BuildingContainer extends JPanel implements UIComponent{
     @Override
     public void fillUIFromModel() {
         this.add(new JLabel(this.building.id));
-        //this.add(setListLegend());
+        JPanel firePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton fireButton = new JButton(Constants.START_FIRE);
+        fireButton.addActionListener(new StartFireListener(fireButton)); // TODO : ajouter building en argument
+        firePanel.add(fireButton);
+        this.add(firePanel);
         JPanel doorsPanel = new JPanel(new GridLayout(this.building.doors.length, 1));
         for(Door door : this.building.doors){
             doorsPanel.add(new DoorContainer(door));
         }
         this.add(doorsPanel);
-        // TODO : gérer les alarmes
     }
-
-    /*private JPanel setListLegend(){
-        JPanel res = new JPanel(new GridLayout(1, 5));
-        JLabel door = new JLabel("Porte");
-        JLabel state = new JLabel("Etat");
-        JLabel entryBadger = new JLabel("Badgeuse Entrée");
-        JLabel exitBadger = new JLabel("Badgeuse Sortie");
-        JLabel passMenu = new JLabel("Badger");
-        res.add(door);
-        res.add(state);
-        res.add(entryBadger);
-        res.add(exitBadger);
-        res.add(passMenu);
-        return res;
-    }*/
 }

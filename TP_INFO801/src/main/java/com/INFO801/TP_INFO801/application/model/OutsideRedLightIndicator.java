@@ -5,22 +5,19 @@ import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.Observable;
 import static java.lang.System.exit;
 
-public class OutsideRedLightIndicator extends Observable implements Agent, Runnable, LightIndicator {
+public class OutsideRedLightIndicator extends Observable implements Agent, Runnable{
     private final String id;
     private final RemoteSpace server;
-    public boolean on;
-    private Color color;
+    public Boolean on;
 
     public OutsideRedLightIndicator(String id){
         this.id = id + " - External Reader - Red Light";
         this.server = tsServerConnection();
         this.on = false;
-        this.color = Color.RED;
     }
 
     @Override
@@ -55,14 +52,9 @@ public class OutsideRedLightIndicator extends Observable implements Agent, Runna
         Object[] response;
         response = server.get(new ActualField(id), new FormalField(Boolean.class));
         if(response != null){
-            on = (boolean) response[1];
+            on = (Boolean) response[1];
             setChanged();
             notifyObservers();
         }
-    }
-
-    @Override
-    public Color getColor() {
-        return this.color;
     }
 }
