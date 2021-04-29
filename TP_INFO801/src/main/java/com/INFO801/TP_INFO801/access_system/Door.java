@@ -45,7 +45,7 @@ public class Door implements Runnable {
 
     private void monitorLocking(RemoteSpace ts) {
         try {
-            Object[] locked = ts.get(new ActualField(doorName), new ActualField(LOCKING), new FormalField(boolean.class));
+            Object[] locked = ts.get(new ActualField(doorName), new ActualField(LOCKING), new FormalField(Boolean.class));
             ts.put(doorName, locked[2]);
         } catch (InterruptedException e) {
             System.out.println(doorName + " : erreur while communicating with the tuple space");

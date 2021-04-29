@@ -13,7 +13,7 @@ import static java.lang.System.exit;
 public class InsideGreenLightIndicator extends Observable implements Agent, Runnable, LightIndicator {
     private final String id;
     private final RemoteSpace server;
-    public boolean on;
+    public Boolean on;
     private Color color;
 
     public InsideGreenLightIndicator(String id){
@@ -55,7 +55,7 @@ public class InsideGreenLightIndicator extends Observable implements Agent, Runn
         Object[] response;
         response = server.get(new ActualField(id), new FormalField(Boolean.class));
         if(response != null){
-            on = (boolean) response[1];
+            on = (Boolean) response[1];
             setChanged();
             notifyObservers();
         }

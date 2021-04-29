@@ -27,7 +27,7 @@ public class Light implements Runnable {
 
     private void monitorLighting(RemoteSpace ts) {
         try {
-            Object[] lighting = ts.get(new ActualField(lightName), new ActualField(LIGHTING), new FormalField(boolean.class));
+            Object[] lighting = ts.get(new ActualField(lightName), new ActualField(LIGHTING), new FormalField(Boolean.class));
             ts.put(lightName, lighting[2]);
         } catch (InterruptedException e) {
             System.out.println(lightName + " : error while communicating with the tuple space");

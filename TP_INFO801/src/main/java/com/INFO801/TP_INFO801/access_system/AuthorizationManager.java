@@ -34,7 +34,7 @@ public class AuthorizationManager implements Runnable {
             String doorName = (String) request[1];
             String direction = (String) request[3];
             int swipeCardId = (int) request[4];
-            boolean authorization;
+            Boolean authorization;
             if (direction.equals(SwipeCardReader.OUT_DIRECTION))
                 authorization = true;
             else
