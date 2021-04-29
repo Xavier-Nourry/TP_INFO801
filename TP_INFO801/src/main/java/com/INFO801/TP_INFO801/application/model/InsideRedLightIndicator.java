@@ -4,19 +4,23 @@ import com.INFO801.TP_INFO801.access_system.TupleSpace;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
+
+import java.awt.*;
 import java.io.IOException;
 import java.util.Observable;
 import static java.lang.System.exit;
 
-public class InsideRedLightIndicator extends Observable implements Agent, Runnable{
+public class InsideRedLightIndicator extends Observable implements Agent, Runnable, LightIndicator{
     private final String id;
     private final RemoteSpace server;
     private boolean on;
+    private Color color;
 
     public InsideRedLightIndicator(String id){
         this.id = id + " - Internal Reader - Red Light";
         this.server = tsServerConnection();
         this.on = false;
+        this.color = Color.RED;
     }
 
     @Override
@@ -55,5 +59,10 @@ public class InsideRedLightIndicator extends Observable implements Agent, Runnab
             setChanged();
             notifyObservers();
         }
+    }
+
+    @Override
+    public Color getColor() {
+        return this.color;
     }
 }

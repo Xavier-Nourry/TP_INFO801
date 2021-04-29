@@ -10,12 +10,12 @@ import static java.lang.System.exit;
 
 public class Door extends Observable implements Agent, Runnable{
     private final RemoteSpace server;
-    private final InsideGreenLightIndicator igli; // Inside
-    private final InsideRedLightIndicator irli; // Inside
-    private final OutsideGreenLightIndicator ogli; // Outside
-    private final OutsideRedLightIndicator orli; // Outside
-    private final String id;
-    private boolean open;
+    public final InsideGreenLightIndicator igli; // Inside
+    public final InsideRedLightIndicator irli; // Inside
+    public final OutsideGreenLightIndicator ogli; // Outside
+    public final OutsideRedLightIndicator orli; // Outside
+    public String id;
+    public boolean open;
 
     public Door(String buildingID, int id){
         this.id = buildingID + " - Door" + id;

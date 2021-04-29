@@ -1,11 +1,12 @@
 package com.INFO801.TP_INFO801.application;
 
 import com.INFO801.TP_INFO801.application.model.Infrastructure;
+import com.INFO801.TP_INFO801.application.view.MainFrame;
 
 public class App {
 
     public static void main(String[] argv){
-        new Infrastructure(2, 2).runAll();
+        new MainFrame(new Infrastructure(2, 2));
     }
 
 }
