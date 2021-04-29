@@ -22,7 +22,7 @@ public class Building implements Runnable {
             doors.add(new Door(buildingID, nbDoor));
 
         // Connexion à l'espace de tuple
-        ts = TupleSpace.remoteSpaceConnexion(buildingID);
+        ts = remoteConnections.remoteSpaceConnexion(buildingID);
     }
 
     @Override

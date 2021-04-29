@@ -15,7 +15,7 @@ public class LockTimer implements Runnable {
         this.timerID = doorID + " - LockTimer";
 
         // Connexion à l'espace de tuple
-        ts = TupleSpace.remoteSpaceConnexion(timerID);
+        ts = remoteConnections.remoteSpaceConnexion(timerID);
     }
 
     public LockTimer(LockTimer lockTimer) {
@@ -85,7 +85,7 @@ public class LockTimer implements Runnable {
                 int updatedCounter = counter - 1;
                 ts.put(timerID, updatedCounter);
                 if (updatedCounter > 0){
-                    ts.put(doorID, Door.LOCKING, true);
+                    ts.put(doorID, Door.LOCKING, Boolean.TRUE);
                 }
             }
     }

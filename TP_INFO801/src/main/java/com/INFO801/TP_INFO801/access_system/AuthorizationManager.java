@@ -1,15 +1,11 @@
 package com.INFO801.TP_INFO801.access_system;
 
 import com.INFO801.TP_INFO801.database_server.PassServer;
-import com.INFO801.TP_INFO801.database_server.Server;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 
 public class AuthorizationManager implements Runnable {
     public static final String OPENING_AUTHORIZATION = "OpeningAuthorization";
@@ -22,17 +18,13 @@ public class AuthorizationManager implements Runnable {
     public AuthorizationManager(String buildingName) {
         this.managerID = buildingName + " - authorizationManager";
         this.buildingID = buildingName;
-        try {
-            // Connexion à la base de données
-            Registry reg = LocateRegistry.getRegistry("127.0.0.1", Server.PORT);
-            dbManager = (PassServer) reg.lookup("PassServer");
-        } catch (RemoteException | NotBoundException e) {
-            System.out.println(managerID + " : error while communicating with the db");
-            e.printStackTrace();
-        }
 
         // Connexion à l'espace de tuple
-        ts = TupleSpace.remoteSpaceConnexion(buildingID);
+        ts = remoteConnections.remoteSpaceConnexion(managerID);
+
+        // Connexion à la base de données
+        dbManager = remoteConnections.remoteDatabaseConnection(managerID);
+
     }
 
     @Override
@@ -44,11 +36,11 @@ public class AuthorizationManager implements Runnable {
         try {
             monitorAuthorizations();
         } catch (InterruptedException e) {
-            System.out.println(buildingID + " : error while communicating with the tuple space");
+            System.out.println(managerID + " : error while communicating with the tuple space");
             e.printStackTrace();
             return;
         } catch (RemoteException remoteException) {
-            System.out.println(buildingID + " : error while communicating with the dataBase");
+            System.out.println(managerID + " : error while communicating with the dataBase");
             remoteException.printStackTrace();
         }
         monitor(); // S'appelle récursivement

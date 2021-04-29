@@ -17,7 +17,7 @@ public class FireAlarm implements Runnable {
         this.alarmID = buildingID + " - FireAlarm";
 
         // Connexion à l'espace de tuple
-        ts = TupleSpace.remoteSpaceConnexion(alarmID);
+        ts = remoteConnections.remoteSpaceConnexion(alarmID);
     }
 
     @Override

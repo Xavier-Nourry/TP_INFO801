@@ -1,15 +1,11 @@
 package com.INFO801.TP_INFO801.access_system;
 
 import com.INFO801.TP_INFO801.database_server.PassServer;
-import com.INFO801.TP_INFO801.database_server.Server;
 import org.jspace.ActualField;
 import org.jspace.FormalField;
 import org.jspace.RemoteSpace;
 
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 
 public class CrossingManager implements Runnable {
     public static final String CROSSING = "Crossing";
@@ -29,17 +25,11 @@ public class CrossingManager implements Runnable {
         this.doorID = doorID;
         this.managerID = doorID + "- CrossingManager";
 
-        try {
-            // Connexion au la base de données
-            Registry reg = LocateRegistry.getRegistry("127.0.0.1", Server.PORT);
-            dbManager = (PassServer) reg.lookup("PassServer");
-        } catch (RemoteException | NotBoundException e) {
-            System.out.println(managerID + " : error while communicating with the db");
-            e.printStackTrace();
-        }
-
         // Connexion à l'espace de tuple
-        ts = TupleSpace.remoteSpaceConnexion(managerID);
+        ts = remoteConnections.remoteSpaceConnexion(managerID);
+
+        // Connexion à la base de données
+        dbManager = remoteConnections.remoteDatabaseConnection(managerID);
     }
 
     @Override
@@ -97,6 +87,6 @@ public class CrossingManager implements Runnable {
         // Si personne d'autre n'a eu l'autorisation de passer en même temps,
         // on reverrouille la porte après le passage de la personne précédente
         if (crosser2 == null)
-            ts.put(doorID, Door.LOCKING, true);
+            ts.put(doorID, Door.LOCKING, Boolean.TRUE);
     }
 }

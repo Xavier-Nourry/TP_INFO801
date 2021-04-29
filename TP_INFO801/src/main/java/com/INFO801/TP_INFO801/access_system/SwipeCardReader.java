@@ -18,7 +18,7 @@ abstract public class SwipeCardReader implements Runnable{
         this.buildingID = buildingID;
 
         // Connexion à l'espace de tuple
-        ts = TupleSpace.remoteSpaceConnexion(readerID);
+        ts = remoteConnections.remoteSpaceConnexion(readerID);
     }
 
     @Override

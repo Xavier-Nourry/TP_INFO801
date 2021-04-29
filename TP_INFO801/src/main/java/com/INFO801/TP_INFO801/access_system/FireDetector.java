@@ -18,7 +18,7 @@ public class FireDetector implements Runnable {
         this.detectorID = buildingID + " - FireDetector";
 
         // Connexion à l'espace de tuple
-        ts = TupleSpace.remoteSpaceConnexion(detectorID);
+        ts = remoteConnections.remoteSpaceConnexion(detectorID);
     }
 
     @Override

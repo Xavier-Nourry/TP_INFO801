@@ -1,16 +1,14 @@
 package com.INFO801.TP_INFO801.access_system;
 
-import org.jspace.RemoteSpace;
 import org.jspace.SequentialSpace;
 import org.jspace.SpaceRepository;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 public class TupleSpace {
     private final static String SERVER_URI = "tcp://127.0.0.1:9002/?keep";
-    private final static String CLIENT_URI = "tcp://127.0.0.1:9002/ts?keep";
+    protected final static String CLIENT_URI = "tcp://127.0.0.1:9002/ts?keep";
 
     public static void main(String[] args) {
         // On crée l'espace de tuples
@@ -35,17 +33,4 @@ public class TupleSpace {
         // On laisse le server tourner en continu
         while (true);
     }
-
-    public static RemoteSpace remoteSpaceConnexion(String elementName){
-        try {
-            RemoteSpace ts = new RemoteSpace(TupleSpace.CLIENT_URI);
-            System.out.println(elementName + " connected");
-            return ts;
-        } catch (IOException e) {
-            System.out.println(elementName + "didn't connect to tuple space");
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 }

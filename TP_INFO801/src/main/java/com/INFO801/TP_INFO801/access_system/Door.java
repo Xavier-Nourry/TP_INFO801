@@ -17,7 +17,7 @@ public class Door implements Runnable {
         this.doorID = buildingID + " - Door" + doorNumber;
 
         // Connexion à l'espace de tuple
-        ts = TupleSpace.remoteSpaceConnexion(doorID);
+        ts = remoteConnections.remoteSpaceConnexion(doorID);
     }
 
     public String getId() {
@@ -37,7 +37,7 @@ public class Door implements Runnable {
     private void setInitialState() {
         // Etat initial: la porte est verrouillée
         try {
-            ts.put(this.doorID, LOCKED, true);
+            ts.put(this.doorID, LOCKED, Boolean.TRUE);
         } catch (InterruptedException e) {
             System.out.println(doorID + " : error while communicating with the tuple space");
             e.printStackTrace();

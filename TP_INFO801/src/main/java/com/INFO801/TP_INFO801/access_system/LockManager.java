@@ -19,7 +19,7 @@ public class LockManager implements Runnable {
         this.managerID = doorID + " - LockManager";
 
         // Connexion à l'espace de tuple
-        ts = TupleSpace.remoteSpaceConnexion(managerID);
+        ts = remoteConnections.remoteSpaceConnexion(managerID);
     }
 
     @Override
@@ -68,15 +68,15 @@ public class LockManager implements Runnable {
 
         if (canOpen){ // Autorisé à passer
             String lightID = (direction.equals(CrossingManager.IN_DIRECTION))? greenExternalLightID : greenInternalLightID;
-            ts.put(lightID, Light.LIGHTING, true);
-            ts.put(doorID, Door.LOCKING, false);
+            ts.put(lightID, Light.LIGHTING, Boolean.TRUE);
+            ts.put(doorID, Door.LOCKING, Boolean.FALSE);
             ts.put(doorID, LockTimer.ACTIVATION, swipeCardId);
             Thread.sleep(5000);
-            ts.put(lightID, Light.LIGHTING, false);
+            ts.put(lightID, Light.LIGHTING, Boolean.FALSE);
         }else{ // Pas autorisé à passer
-            ts.put(redExternalLightID, Light.LIGHTING, true);
+            ts.put(redExternalLightID, Light.LIGHTING, Boolean.TRUE);
             Thread.sleep(10000);
-            ts.put(redExternalLightID, Light.LIGHTING, false);
+            ts.put(redExternalLightID, Light.LIGHTING, Boolean.FALSE);
         }
     }
 }

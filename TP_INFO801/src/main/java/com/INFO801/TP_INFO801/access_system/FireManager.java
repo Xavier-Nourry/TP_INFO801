@@ -16,7 +16,7 @@ public class FireManager implements Runnable {
         this.managerID = buildingID + " - FireManager";
 
         // Connexion à l'espace de tuple
-        ts = TupleSpace.remoteSpaceConnexion(managerID);
+        ts = remoteConnections.remoteSpaceConnexion(managerID);
     }
 
     @Override

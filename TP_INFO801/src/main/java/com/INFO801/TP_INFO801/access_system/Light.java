@@ -16,7 +16,7 @@ public class Light implements Runnable {
         this.lightID = readerID + " - " + color + " Light";
 
         // Connexion à l'espace de tuple
-        ts = TupleSpace.remoteSpaceConnexion(lightID);
+        ts = remoteConnections.remoteSpaceConnexion(lightID);
     }
 
     public String getLightID() {

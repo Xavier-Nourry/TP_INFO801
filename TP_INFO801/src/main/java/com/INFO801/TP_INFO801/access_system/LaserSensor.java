@@ -15,7 +15,7 @@ public class LaserSensor implements Runnable {
         this.sensorID = doorID + " - Laser";
 
         // Connexion à l'espace de tuple
-        ts = TupleSpace.remoteSpaceConnexion(sensorID);
+        ts = remoteConnections.remoteSpaceConnexion(sensorID);
     }
 
     @Override
